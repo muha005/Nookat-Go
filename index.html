@@ -2,31 +2,29 @@
 <html lang="kg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOOKAT GO | Тамак-аш жеткирүү</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nookat Go - Тамак жеткирүү</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <nav class="top-nav">
-        <div class="logo">NOOKAT<span>GO</span></div>
+        <a href="#" class="logo">NOOKAT<span>GO</span></a>
         <div class="lang-selector">
             <span id="lang-kg" class="active" onclick="changeLang('kg')">KG</span>
             <span id="lang-ru" onclick="changeLang('ru')">RU</span>
         </div>
     </nav>
 
-    <section class="hero-search">
+    <header class="hero-search">
         <h1 id="hero-title">Ноокаттагы эң мыкты даамдар</h1>
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Тамак же кафе издөө..." onkeyup="searchFood()">
+            <input type="text" id="searchInput" oninput="searchFood()" placeholder="Тамак же кафе издөө...">
         </div>
-    </section>
+    </header>
 
     <div class="categories-container">
         <div class="categories">
@@ -36,8 +34,6 @@
             <button class="cat-item" onclick="filterMenu('pizza', event)">Пицца</button>
             <button class="cat-item" onclick="filterMenu('fastfood', event)">Фастфуд</button>
             <button class="cat-item" onclick="filterMenu('grill', event)">Шашлык</button>
-            <button class="cat-item" onclick="filterMenu('korean', event)">Корей</button>
-            <button class="cat-item" onclick="filterMenu('cakes', event)">Таттуулар</button>
             <button class="cat-item" onclick="filterMenu('drinks', event)">Суулар</button>
         </div>
     </div>
@@ -45,63 +41,83 @@
     <main id="menu-grid" class="menu-grid">
         </main>
 
-    <div class="bottom-cart" id="cartBar" onclick="showCart()">
-        <div class="cart-left">
+    <div id="cartBar" class="bottom-cart" onclick="showCart()">
+        <div>
             <span id="cartCount">0</span>
-            <span id="cartSum">0</span> сом
+            <span id="cart-view-text">СЕБЕТ</span>
         </div>
-        <div id="view-cart-btn-text">СЕБЕТ <i class="fas fa-shopping-basket"></i></div>
+        <div><span id="cartSum">0</span> сом</div>
     </div>
 
-    <div id="productModal" class="modal-overlay" onclick="closeProductOutside(event)">
+    <div id="productModal" class="modal-overlay" onclick="if(event.target == this) closeProduct()">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeProduct()">&times;</span>
-            <img id="modalImg" src="https://via.placeholder.com/400x250" alt="Food Image">
+            <img id="modalImg" src="" alt="">
             <div class="modal-info">
-                <h2 id="modalName">Тамактын аты</h2>
-                <p id="modalDesc">Тамак жөнүндө кыскача маалымат ушул жерде болот.</p>
-                <div class="ingred-box">
-                    <strong id="ing-title">Курамы:</strong>
-                    <p id="modalIngred">Продукттардын тизмеси...</p>
-                </div>
-                <button class="add-to-cart-big" id="addBtnAction">Себетке кошуу</button>
+                <h2 id="modalName"></h2>
+                <p id="modalDesc" style="color: #666; margin: 10px 0;"></p>
+                <div style="font-size: 14px; color: #888;">Курамы: <span id="modalIngred"></span></div>
+                <button id="addBtnAction" class="add-to-cart-big">Себетке кошуу</button>
             </div>
         </div>
     </div>
 
-    <div id="cartModal" class="modal-overlay" onclick="closeCartOutside(event)">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeCart()">&times;</span>
-            <h2 id="cart-t-text" style="padding: 20px 20px 10px; margin: 0;">Сиздин себетиңиз</h2>
+    <div id="cartModal" class="modal-overlay" onclick="if(event.target == this) closeCart()">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <h2 style="padding: 20px 20px 10px;">Сиздин себетиңиз</h2>
             
-            <div id="cartList" style="padding: 0 20px; max-height: 50vh; overflow-y: auto;">
+            <div id="cartList" style="padding: 0 20px;">
                 </div>
 
             <div style="padding: 20px;">
-                <div class="delivery-config">
-                    <label style="font-size: 12px; color: #666; font-weight: bold;">Жеткирүү аймагы:</label>
-                    <select id="deliveryType" onchange="showCart()" style="width:100%; padding:12px; border-radius:12px; border:1.5px solid #eee; margin-top: 5px; outline: none; font-weight: bold;">
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 12px; font-weight: bold; color: #666;">Жеткирүү аймагы:</label>
+                    <select id="deliveryType" onchange="calculateTotal()" style="width:100%; padding:12px; border-radius:12px; border:1.5px solid #eee; margin-top: 5px;">
                         <option value="0">Ноокат ичи (Акысыз)</option>
                         <option value="150">Шаар сырты (+150 сом)</option>
                     </select>
                 </div>
-<div style="margin-top: 15px; background: #f9f9f9; padding: 10px; border-radius: 12px;">
-    <input type="text" id="userName" placeholder="Атыңыз..." style="width:100%; padding:12px; border-radius:10px; border:1.5px solid #eee; margin-bottom: 8px; outline: none; font-size: 16px;">
-    <input type="text" id="userAddress" placeholder="Дарегиңиз (мис: Ленин 15)..." style="width:100%; padding:12px; border-radius:10px; border:1.5px solid #eee; outline: none; font-size: 16px;">
-</div>
-                <div class="total-line">
-                    <span id="t-text">Жалпы сумма:</span>
-                    <strong id="finalSum">0 сом</strong>
+
+                <div style="background: #f1f5ff; padding: 12px; border-radius: 12px; border: 1px solid #d1dbff; margin-bottom: 15px;">
+                    <label style="font-size: 12px; font-weight: bold; color: #444;">Төлөм ыкмасы:</label>
+                    <select id="paymentMethod" onchange="toggleMbank(this.value)" style="width:100%; padding:10px; border-radius:10px; border:1.5px solid #eee; margin-top: 5px; font-weight: bold;">
+                        <option value="Налички">Налички (Курьерге)</option>
+                        <option value="MBANK">MBANK (Которуу)</option>
+                    </select>
+                    <div id="mbankDetails" style="display:none; margin-top: 8px; font-size: 13px; background: white; padding: 10px; border-radius: 8px; border: 1px dashed #2ecc71;">
+                        Мбанк: <strong style="color: #2ecc71;">0700 123 456</strong><br>
+                        <small>Аты-жөнүңүздү жазыңыз</small>
+                    </div>
                 </div>
 
-                <button class="checkout-btn" onclick="checkout()">
-                    <i class="fab fa-whatsapp"></i> WhatsApp аркылуу заказ берүү
+                <div style="background: #f9f9f9; padding: 12px; border-radius: 12px;">
+                    <input type="text" id="userName" placeholder="Атыңыз..." style="width:100%; padding:12px; border-radius:10px; border:1.5px solid #eee; margin-bottom: 8px; font-size: 16px;">
+                    <input type="text" id="userAddress" placeholder="Дарегиңиз (мис: Ленин 15)..." style="width:100%; padding:12px; border-radius:10px; border:1.5px solid #eee; font-size: 16px;">
+                </div>
+
+                <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 900; font-size: 20px;">Жалпы: <span id="finalSum" style="color: #2ecc71;">0</span> сом</span>
+                </div>
+                
+                <button class="checkout-btn" onclick="checkout()" style="width:100%; background:#25d366; color:white; border:none; padding:15px; border-radius:12px; font-weight:800; margin-top:15px;">
+                    <i class="fab fa-whatsapp"></i> ЗАКАЗ БЕРҮҮ
                 </button>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        function toggleMbank(val) {
+            document.getElementById('mbankDetails').style.display = val === 'MBANK' ? 'block' : 'none';
+        }
+
+        // Жалпы сумманы кайра эсептөө (Жеткирүү акысын кошуу)
+        function calculateTotal() {
+            let subtotal = cart.reduce((a, b) => a + b.price, 0);
+            let delivery = parseInt(document.getElementById('deliveryType').value);
+            document.getElementById('finalSum').innerText = subtotal + delivery;
+        }
+    </script>
 </body>
 </html>
 
