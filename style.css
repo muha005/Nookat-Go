@@ -1,0 +1,388 @@
+/* 1. НЕГИЗГИ СТИЛДЕР */
+:root {
+    --primary: #ffcc00;
+    --primary-dark: #e6b800;
+    --dark: #1a1a1a;
+    --bg: #f8f9fb;
+    --white: #ffffff;
+    --gray: #999;
+    --shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background: var(--bg);
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 2. НАВИГАЦИЯ */
+.top-nav {
+    background: var(--white);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.logo {
+    font-weight: 900;
+    font-size: 24px;
+    letter-spacing: -1px;
+    text-decoration: none;
+    color: var(--dark);
+}
+
+.logo span {
+    color: var(--primary);
+}
+
+.lang-selector span {
+    cursor: pointer;
+    color: #ccc;
+    margin-left: 12px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.3s;
+    padding-bottom: 2px;
+}
+
+.lang-selector span.active {
+    color: var(--dark);
+    border-bottom: 3px solid var(--primary);
+}
+
+/* 3. ИЗДӨӨ БӨЛҮМҮ */
+.hero-search {
+    background: linear-gradient(180deg, var(--primary) 0%, var(--bg) 100%);
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.hero-search h1 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.search-box {
+    max-width: 500px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 18px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
+.search-box i {
+    color: var(--gray);
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 5px 12px;
+    font-size: 16px;
+}
+
+/* 4. КАТЕГОРИЯЛАР */
+.categories-container {
+    background: var(--white);
+    padding: 12px 0;
+    position: sticky;
+    top: 60px;
+    z-index: 999;
+    border-bottom: 1px solid #eee;
+}
+
+.categories {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 0 15px;
+    scrollbar-width: none; /* Firefox */
+}
+
+.categories::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.cat-item {
+    border: none;
+    background: #f1f1f1;
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+.cat-item.active {
+    background: var(--primary);
+    transform: scale(1.05);
+}
+
+/* 5. ТАМАКТАР ТИЗМЕСИ (GRID) */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .menu-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .menu-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.food-card {
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.02);
+}
+
+.food-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.food-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.card-info {
+    padding: 12px;
+}
+
+.cafe-tag {
+    font-size: 10px;
+    color: var(--gray);
+    text-transform: uppercase;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.card-info h3 {
+    font-size: 16px;
+    margin: 0 0 8px 0;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-price {
+    color: #2ecc71;
+    font-weight: 800;
+    font-size: 17px;
+    display: block;
+}
+
+/* 6. СЕБЕТ ПАНЕЛИ (ТӨМӨНДӨ) */
+.bottom-cart {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: var(--dark);
+    color: var(--white);
+    padding: 18px 25px;
+    border-radius: 22px;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1001;
+    cursor: pointer;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.cart-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+}
+
+#cartCount {
+    background: var(--primary);
+    color: var(--dark);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+/* 7. МОДАЛДЫК ТЕРЕЗЕЛЕР */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 2000;
+    justify-content: center;
+    align-items: flex-end; /* Мобилдикте ылдыйдан чыгат */
+    backdrop-filter: blur(8px);
+}
+
+@media (min-width: 768px) {
+    .modal-overlay {
+        align-items: center;
+    }
+}
+
+.modal-content {
+    background: var(--white);
+    width: 100%;
+    max-width: 450px;
+    border-radius: 30px 30px 0 0;
+    overflow: hidden;
+    position: relative;
+    max-height: 90vh;
+    animation: slideUp 0.3s ease;
+}
+
+@media (min-width: 768px) {
+    .modal-content {
+        border-radius: 30px;
+    }
+}
+
+.modal-content img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.modal-info {
+    padding: 25px;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255,255,255,0.9);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+/* 8. СЕБЕТТИН ИЧИ */
+.cart-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.remove-item {
+    color: #ff4757;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    transition: 0.2s;
+}
+
+.remove-item:hover {
+    transform: scale(1.1);
+}
+
+/* 9. БАСКЫЧТАР */
+.add-to-cart-big {
+    width: 100%;
+    background: var(--primary);
+    border: none;
+    padding: 20px;
+    border-radius: 18px;
+    font-weight: 900;
+    font-size: 17px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: 0.2s;
+}
+
+.add-to-cart-big:active {
+    transform: scale(0.97);
+}
+
+.checkout-btn {
+    width: 100%;
+    background: #25d366;
+    color: var(--white);
+    border: none;
+    padding: 18px;
+    border-radius: 15px;
+    font-weight: 800;
+    font-size: 16px;
+    margin-top: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.total-line {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.ingred-box {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 15px;
+    margin-top: 15px;
+}
+
+.ingred-box p {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+    color: #666;
+}

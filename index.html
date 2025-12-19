@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="kg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOOKAT GO | Тамак-аш жеткирүү</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="logo">NOOKAT<span>GO</span></div>
+        <div class="lang-selector">
+            <span id="lang-kg" class="active" onclick="changeLang('kg')">KG</span>
+            <span id="lang-ru" onclick="changeLang('ru')">RU</span>
+        </div>
+    </nav>
+
+    <section class="hero-search">
+        <h1 id="hero-title">Ноокаттагы эң мыкты даамдар</h1>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Тамак же кафе издөө..." onkeyup="searchFood()">
+        </div>
+    </section>
+
+    <div class="categories-container">
+        <div class="categories">
+            <button class="cat-item active" onclick="filterMenu('all', event)">Баары</button>
+            <button class="cat-item" onclick="filterMenu('national', event)">Улуттук</button>
+            <button class="cat-item" onclick="filterMenu('turkish', event)">Түрк</button>
+            <button class="cat-item" onclick="filterMenu('pizza', event)">Пицца</button>
+            <button class="cat-item" onclick="filterMenu('fastfood', event)">Фастфуд</button>
+            <button class="cat-item" onclick="filterMenu('grill', event)">Шашлык</button>
+            <button class="cat-item" onclick="filterMenu('korean', event)">Корей</button>
+            <button class="cat-item" onclick="filterMenu('cakes', event)">Таттуулар</button>
+            <button class="cat-item" onclick="filterMenu('drinks', event)">Суулар</button>
+        </div>
+    </div>
+
+    <main id="menu-grid" class="menu-grid">
+        </main>
+
+    <div class="bottom-cart" id="cartBar" onclick="showCart()">
+        <div class="cart-left">
+            <span id="cartCount">0</span>
+            <span id="cartSum">0</span> сом
+        </div>
+        <div id="view-cart-btn-text">СЕБЕТ <i class="fas fa-shopping-basket"></i></div>
+    </div>
+
+    <div id="productModal" class="modal-overlay" onclick="closeProductOutside(event)">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeProduct()">&times;</span>
+            <img id="modalImg" src="https://via.placeholder.com/400x250" alt="Food Image">
+            <div class="modal-info">
+                <h2 id="modalName">Тамактын аты</h2>
+                <p id="modalDesc">Тамак жөнүндө кыскача маалымат ушул жерде болот.</p>
+                <div class="ingred-box">
+                    <strong id="ing-title">Курамы:</strong>
+                    <p id="modalIngred">Продукттардын тизмеси...</p>
+                </div>
+                <button class="add-to-cart-big" id="addBtnAction">Себетке кошуу</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cartModal" class="modal-overlay" onclick="closeCartOutside(event)">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeCart()">&times;</span>
+            <h2 id="cart-t-text" style="padding: 20px 20px 10px; margin: 0;">Сиздин себетиңиз</h2>
+            
+            <div id="cartList" style="padding: 0 20px; max-height: 50vh; overflow-y: auto;">
+                </div>
+
+            <div style="padding: 20px;">
+                <div class="delivery-config">
+                    <label style="font-size: 12px; color: #666; font-weight: bold;">Жеткирүү аймагы:</label>
+                    <select id="deliveryType" onchange="showCart()" style="width:100%; padding:12px; border-radius:12px; border:1.5px solid #eee; margin-top: 5px; outline: none; font-weight: bold;">
+                        <option value="0">Ноокат ичи (Акысыз)</option>
+                        <option value="150">Шаар сырты (+150 сом)</option>
+                    </select>
+                </div>
+
+                <div class="total-line">
+                    <span id="t-text">Жалпы сумма:</span>
+                    <strong id="finalSum">0 сом</strong>
+                </div>
+
+                <button class="checkout-btn" onclick="checkout()">
+                    <i class="fab fa-whatsapp"></i> WhatsApp аркылуу заказ берүү
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
