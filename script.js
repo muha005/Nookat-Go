@@ -188,11 +188,12 @@ function checkout() {
                   `_Заказ сайттан жөнөтүлдү_`;
 
     // WhatsApp-ты даяр текст менен ачуу
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`);
+    window.open(`https://wa.me/${556616174}?text=${encodeURIComponent(message)}`);
 }
 
 function closeProduct() { document.getElementById('productModal').style.display = 'none'; }
 function closeCart() { document.getElementById('cartModal').style.display = 'none'; }
 
 changeLang('kg');
+
 
