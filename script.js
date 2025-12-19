@@ -190,12 +190,28 @@ function searchFood() {
 // 10. WHATSAPP ЗАКАЗ
 function checkout() {
     if(cart.length === 0) return;
-    let phone = "996XXXXXXXXX"; // Ушул жерге өз номериңизди жазыңыз
+    
+    // БУЛ ЖЕРГЕ ӨЗ НОМЕРИҢИЗДИ ЖАЗЫҢЫЗ (996 дан баштап, плюс койбоңуз)
+    let phone = "996700123456"; 
+    
+    let d = window.currentOrderDetails;
     let items = cart.map(i => `- ${i.name_kg} (${i.price}с)`).join("\n");
-    let total = document.getElementById('finalSum').innerText;
-    let text = `ЖАҢЫ ЗАКАЗ (NOOKAT GO):\n\n${items}\n\nЖалпы сумма: ${total}`;
-    window.open(`https://wa.me/${556616174}?text=${encodeURIComponent(text)}`);
-}
+    
+    // Билдирүүнүн шаблону (Кардарга толтуруу үчүн бош орундар менен)
+    let text = `*ЖАҢЫ ЗАКАЗ (NOOKAT GO)*\n` +
+               `--------------------------\n` +
+               `*ТАМАКТАР:*\n${items}\n\n` +
+               `*ТӨЛӨМ:*\n` +
+               `Тамактар: ${d.subtotal} сом\n` +
+               `Жеткирүү: ${d.delivery} сом\n` +
+               `*ЖАЛПЫ: ${d.total} сом*\n` +
+               `--------------------------\n` +
+               `*КАРДАРДЫН МААЛЫМАТЫ:*\n` +
+               `Атыңыз: \n` +
+               `Дарегиңиз: \n` +
+               `Телефон: \n` +
+               `--------------------------\n` +
+               `_(Сураныч, жогорудагы бош жерлерди толтуруп жөнөтүңүз)_`;
 
-// БАШТОО
-changeLang('kg');
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`);
+}
