@@ -40,7 +40,24 @@ const products = [
     { id: 4, cat: "fastfood", cafe: "Osh Burger", name_kg: "Чизбургер", name_ru: "Чизбургер", price: 180, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" },
     { id: 5, cat: "turkish", cafe: "Istanbul", name_kg: "Донер Кебаб", name_ru: "Донер Кебаб", price: 200, img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=500" }
 ];
-
+{ 
+  id: 6, 
+  cat: "national", 
+  cafe: "Ордо", 
+  name_kg: "Манты (5 даана)", 
+  name_ru: "Манты (5 шт)", 
+  price: 200, 
+  img: "https://images.unsplash.com/photo-1534422298391-e4f8c170db76?w=500" 
+},
+{ 
+  id: 7, 
+  cat: "pizza", 
+  cafe: "Pizza Bell", 
+  name_kg: "Төрт сыр", 
+  name_ru: "Четыре сыра", 
+  price: 600, 
+  img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500" 
+},
 let cart = [];
 let currentLang = 'kg';
 
@@ -138,4 +155,5 @@ function closeCart() { document.getElementById('cartModal').style.display = 'non
 
 // Баштапкы ишке киргизүү
 changeLang('kg');
+
 
