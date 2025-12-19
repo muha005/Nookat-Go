@@ -156,39 +156,36 @@ function searchFood() {
 function checkout() {
     if(cart.length === 0) return;
 
-    // Сайттагы кутучалардан кардар жазган текстти алабыз
     const name = document.getElementById('userName').value;
     const address = document.getElementById('userAddress').value;
+    const payment = document.getElementById('paymentMethod').value;
 
-    // Эгер бош болсо, эскертүү беребиз
     if (!name || !address) {
-        alert(currentLang === 'kg' ? "Сураныч, атыңызды жана дарегиңизди жазыңыз!" : "Пожалуйста, введите имя и адрес!");
+        alert("Сураныч, атыңызды жана дарегиңизди жазыңыз!");
         return;
     }
 
-    let phone = "996700123456"; // ӨЗ НОМЕРИҢИЗДИ ЖАЗЫҢЫЗ (мисалы: 996707123456)
-    
-    // Тамактардын тизмесин түзөбүз
+    let phone = "996700123456"; // ӨЗ НОМЕРИҢИЗ
     let itemsText = cart.map(i => `- ${currentLang === 'kg' ? i.name_kg : i.name_ru} (${i.price}с)`).join("\n");
-    
-    // Жеткирүү акысын кошкондогу жалпы сумма
     let total = document.getElementById('finalSum').innerText;
     let deliveryZone = document.getElementById('deliveryType').value == "0" ? "Ноокат ичи" : "Шаар сырты";
 
-    // WhatsApp үчүн даяр шаблон
     let message = `*ЖАҢЫ ЗАКАЗ (NOOKAT GO)*\n` +
                   `--------------------------\n` +
                   `👤 *КАРДАР:* ${name}\n` +
                   `📍 *ДАРЕК:* ${address}\n` +
                   `🚚 *ЗОНА:* ${deliveryZone}\n` +
+                  `💳 *ТӨЛӨМ:* ${payment}\n` +
                   `--------------------------\n` +
                   `🍴 *ТАМАКТАР:*\n${itemsText}\n\n` +
                   `💰 *ЖАЛПЫ СУММА:* ${total}\n` +
-                  `--------------------------\n` +
-                  `_Заказ сайттан жөнөтүлдү_`;
+                  `--------------------------\n`;
+    
+    if(payment === "MBANK") {
+        message += `_Кардар Мбанк аркылуу төлөйт. Төлөмдү текшериңиз!_`;
+    }
 
-    // WhatsApp-ты даяр текст менен ачуу
-    window.open(`https://wa.me/${556616174}?text=${encodeURIComponent(message)}`);
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`);
 }
 
 function closeProduct() { document.getElementById('productModal').style.display = 'none'; }
