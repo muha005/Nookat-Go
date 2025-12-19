@@ -2,36 +2,18 @@
 <html lang="kg">
 <head>
     <meta charset="UTF-8">
-    <title>Nookat Go - Админ Панель</title>
+    <title>Nookat Go - Администратор</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        th { background: #2ecc71; color: white; }
-        .btn-done { background: #2ecc71; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
-        .btn-delete { background: #e74c3c; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; margin-left: 5px; }
-        .status-completed { background: #d4edda; color: #155724; }
+        body { font-family: sans-serif; background: #eef2f3; padding: 20px; }
+        .card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid #f1c40f; }
+        .completed { border-left: 5px solid #2ecc71; background: #f9f9f9; opacity: 0.8; }
+        .btn-done { background: #2ecc71; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 5px; }
+        .btn-del { background: #e74c3c; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 5px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>📦 Бардык заказдар</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Убакыт</th>
-                    <th>Кардар</th>
-                    <th>Дарек</th>
-                    <th>Заказ</th>
-                    <th>Сумма</th>
-                    <th>Төлөм</th>
-                    <th>Аракет</th>
-                </tr>
-            </thead>
-            <tbody id="ordersList"></tbody>
-        </table>
-    </div>
+    <h2>📋 Түшкөн заказдар</h2>
+    <div id="ordersContainer">Жүктөлүүдө...</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
@@ -47,35 +29,29 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const ordersRef = ref(db, 'orders');
 
-        onValue(ordersRef, (snapshot) => {
+        onValue(ref(db, 'orders'), (snapshot) => {
             const data = snapshot.val();
-            const list = document.getElementById('ordersList');
-            list.innerHTML = "";
-            
+            const container = document.getElementById('ordersContainer');
+            container.innerHTML = "";
+            if (!data) { container.innerHTML = "Заказдар жок"; return; }
+
             for (let id in data) {
-                const order = data[id];
-                const row = `
-                    <tr class="${order.status === 'completed' ? 'status-completed' : ''}">
-                        <td>${order.time}</td>
-                        <td><b>${order.customerName}</b></td>
-                        <td>${order.address}</td>
-                        <td>${order.items}</td>
-                        <td>${order.totalPrice} с</td>
-                        <td>${order.paymentMethod}</td>
-                        <td>
-                            <button class="btn-done" onclick="markDone('${id}')">✅</button>
-                            <button class="btn-delete" onclick="deleteOrder('${id}')">🗑️</button>
-                        </td>
-                    </tr>
-                `;
-                list.innerHTML += row;
+                const o = data[id];
+                container.innerHTML += `
+                    <div class="card ${o.status === 'completed' ? 'completed' : ''}">
+                        <p><b>Убакыт:</b> ${o.time}</p>
+                        <p><b>Кардар:</b> ${o.customerName} | <b>Дарек:</b> ${o.address}</p>
+                        <p><b>Заказ:</b> ${o.items}</p>
+                        <p><b>Сумма:</b> ${o.totalPrice} сом (${o.paymentMethod})</p>
+                        <button class="btn-done" onclick="markDone('${id}')">Аткарылды</button>
+                        <button class="btn-del" onclick="delOrder('${id}')">Өчүрүү</button>
+                    </div>`;
             }
         });
 
         window.markDone = (id) => update(ref(db, 'orders/' + id), { status: 'completed' });
-        window.deleteOrder = (id) => { if(confirm('Өчүрөсүзбү?')) remove(ref(db, 'orders/' + id)); };
+        window.delOrder = (id) => { if(confirm('Өчүрүлсүнбү?')) remove(ref(db, 'orders/' + id)); };
     </script>
 </body>
 </html>
