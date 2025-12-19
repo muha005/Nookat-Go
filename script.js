@@ -134,7 +134,7 @@ function copyNumber() {
     });
 }
 
-// ЗАКАЗ БЕРҮҮ ФУНКЦИЯСЫ
+// ЗАКАЗ БЕРҮҮ ФУНКЦИЯСЫ (ЖАҢЫЛАНГАН)
 function checkout() {
     if(cart.length === 0) return;
 
@@ -153,6 +153,12 @@ function checkout() {
     let total = document.getElementById('finalSum').innerText;
     let deliveryZone = deliveryValue == "0" ? "Ноокат ичи (0с)" : "Шаар сырты (150с)";
 
+    // Мбанк үчүн кошумча эскертүү текстти
+    let mbankNote = "";
+    if (payment === "MBANK") {
+        mbankNote = `\n⚠️ *ЭСКЕРТҮҮ:* Мбанктан төлөп бүткөн соң, ушул жерге *ЧЕКТИ* сүрөт катары жиберип коюңуз! 🙏\n`;
+    }
+
     let message = `🚀 *ЖАҢЫ ЗАКАЗ: NOOKAT GO*\n` +
                   `━━━━━━━━━━━━━━━━\n` +
                   `👤 *КАРДАР:* ${name.toUpperCase()}\n` +
@@ -162,14 +168,15 @@ function checkout() {
                   `━━━━━━━━━━━━━━━━\n` +
                   `🍴 *ТАМАКТАР:*\n${itemsText}\n\n` +
                   `💰 *ЖАЛПЫ СУММА:* ${total} сом\n` +
+                  mbankNote + // Эскертүү ушул жерге кошулат
                   `━━━━━━━━━━━━━━━━\n` +
                   `_Заказ сайт аркылуу жөнөтүлдү_`;
 
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`);
 }
-
 function closeProduct() { document.getElementById('productModal').style.display = 'none'; }
 function closeCart() { document.getElementById('cartModal').style.display = 'none'; }
 
 // Баштапкы ишке киргизүү
 renderMenu();
+
