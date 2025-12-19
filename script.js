@@ -134,7 +134,7 @@ function copyNumber() {
     });
 }
 
-// ЗАКАЗ БЕРҮҮ ФУНКЦИЯСЫ (ЖАҢЫЛАНГАН)
+// ЗАКАЗ БЕРҮҮ ФУНКЦИЯСЫ (QR ЖАНА ЧЕК МЕНЕН ЖАҢЫЛАНДЫ)
 function checkout() {
     if(cart.length === 0) return;
 
@@ -168,12 +168,13 @@ function checkout() {
                   `━━━━━━━━━━━━━━━━\n` +
                   `🍴 *ТАМАКТАР:*\n${itemsText}\n\n` +
                   `💰 *ЖАЛПЫ СУММА:* ${total} сом\n` +
-                  mbankNote + // Эскертүү ушул жерге кошулат
+                   mbankNote + 
                   `━━━━━━━━━━━━━━━━\n` +
                   `_Заказ сайт аркылуу жөнөтүлдү_`;
 
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`);
 }
+
 function closeProduct() { document.getElementById('productModal').style.display = 'none'; }
 function closeCart() { document.getElementById('cartModal').style.display = 'none'; }
 
