@@ -130,7 +130,7 @@ function checkout() {
     let items = cart.map(i => `- ${currentLang === 'kg' ? i.name_kg : i.name_ru} (${i.price}с)`).join("\n");
     let total = document.getElementById('finalSum').innerText;
     let text = `*ЖАҢЫ ЗАКАЗ (Nookat Go)*\n\n${items}\n\n*Жалпы:* ${total}\n\nДарегим: `;
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`);
+    window.open(`https://wa.me/${556616174}?text=${encodeURIComponent(text)}`);
 }
 
 function closeProduct() { document.getElementById('productModal').style.display = 'none'; }
@@ -138,3 +138,4 @@ function closeCart() { document.getElementById('cartModal').style.display = 'non
 
 // Баштапкы ишке киргизүү
 changeLang('kg');
+
