@@ -196,8 +196,6 @@ function checkout() {
     
     let d = window.currentOrderDetails;
     let items = cart.map(i => `- ${i.name_kg} (${i.price}с)`).join("\n");
-    
-    // Билдирүүнүн шаблону (Кардарга толтуруу үчүн бош орундар менен)
     let text = `*ЖАҢЫ ЗАКАЗ (NOOKAT GO)*\n` +
                `--------------------------\n` +
                `*ТАМАКТАР:*\n${items}\n\n` +
