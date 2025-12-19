@@ -78,17 +78,20 @@
                     <label style="font-size: 13px; font-weight: 900; color: #444;">ТӨЛӨМ ЫКМАСЫ:</label>
                     <select id="paymentMethod" onchange="toggleMbank(this.value)" style="width:100%; padding:14px; border-radius:12px; border:2px solid #eee; margin-top: 5px; font-weight: bold; font-size: 16px;">
                         <option value="Налички">💵 Налички (Курьерге)</option>
-                        <option value="MBANK">💎 MBANK (Түз которуу)</option>
+                        <option value="MBANK">💎 MBANK (Которуу)</option>
                     </select>
                     
                     <div id="mbankDetails" style="display:none; margin-top: 15px; text-align: center; background: white; padding: 15px; border-radius: 12px; border: 2px dashed #2ecc71;">
-                        <p style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">Төмөнкү баскычты басып төлөңүз:</p>
+                        <p style="font-size: 14px; font-weight: bold; margin-bottom: 8px;">Которуу үчүн номер:</p>
                         
-                        <a href="https://mbank.page.link/transfer?phone=996556616174" target="_blank" style="display: block; background: #2ecc71; color: white; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: 900; font-size: 16px; margin-bottom: 10px;">
-                            <i class="fas fa-university"></i> МБАНК МЕНЕН ТӨЛӨӨ
-                        </a>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; background: #f9f9f9; padding: 10px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
+                            <span style="font-size: 18px; font-weight: 900; color: #333;">0556 61 61 74</span>
+                            <button onclick="copyNumber()" style="background: #2ecc71; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px;">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
                         
-                        <p style="font-size: 12px; color: #666;">Номер: <strong>0556 61 61 74</strong></p>
+                        <p style="font-size: 12px; color: #666;">Номерди көчүрүп, Мбанктан которуңуз. <br> Төлөп бүтүп, "Заказды жөнөтүү" баскычын басыңыз.</p>
                     </div>
                 </div>
 
@@ -120,8 +123,23 @@
             let delivery = parseInt(document.getElementById('deliveryType').value);
             document.getElementById('finalSum').innerText = subtotal + delivery;
         }
+
+        // Номерди көчүрүү функциясы
+        function copyNumber() {
+            const number = "0556616174";
+            navigator.clipboard.writeText(number).then(() => {
+                alert("Номер көчүрүлдү! Эми Мбанкка кирип чаптаңыз.");
+            }).catch(err => {
+                // Кээ бир эски браузерлер үчүн камдык жол
+                const el = document.createElement('textarea');
+                el.value = number;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+                alert("Номер көчүрүлдү!");
+            });
+        }
     </script>
 </body>
 </html>
-
-
