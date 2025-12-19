@@ -153,28 +153,46 @@ function searchFood() {
         p.cafe.toLowerCase().includes(val)
     ));
 }
-
 function checkout() {
-    let phone = "996700123456"; // БУЛ ЖЕРГЕ ӨЗ НОМЕРИҢИЗДИ ЖАЗЫҢЫЗ
-    let itemsText = cart.map(i => `- ${currentLang === 'kg' ? i.name_kg : i.name_ru} (${i.price}с)`).join("\n");
-    let total = document.getElementById('finalSum').innerText;
-    
-    let text = `*ЖАҢЫ ЗАКАЗ (NOOKAT GO)*\n` +
-               `--------------------------\n` +
-               `*ТАМАКТАР:*\n${itemsText}\n\n` +
-               `*ЖАЛПЫ:* ${total}\n` +
-               `--------------------------\n` +
-               `*КАРДАР МААЛЫМАТЫ:*\n` +
-               `Аты-жөнүңүз: \n` +
-               `Дарегиңиз: \n` +
-               `Телефонуңуз: \n` +
-               `--------------------------\n` +
-               `_Сураныч, жогорудагы бош жерлерди толтуруп жөнөтүңүз._`;
+    if(cart.length === 0) return;
 
-    window.open(`https://wa.me/${556616174}?text=${encodeURIComponent(text)}`);
+    // Сайттагы кутучалардан кардар жазган текстти алабыз
+    const name = document.getElementById('userName').value;
+    const address = document.getElementById('userAddress').value;
+
+    // Эгер бош болсо, эскертүү беребиз
+    if (!name || !address) {
+        alert(currentLang === 'kg' ? "Сураныч, атыңызды жана дарегиңизди жазыңыз!" : "Пожалуйста, введите имя и адрес!");
+        return;
+    }
+
+    let phone = "996700123456"; // ӨЗ НОМЕРИҢИЗДИ ЖАЗЫҢЫЗ (мисалы: 996707123456)
+    
+    // Тамактардын тизмесин түзөбүз
+    let itemsText = cart.map(i => `- ${currentLang === 'kg' ? i.name_kg : i.name_ru} (${i.price}с)`).join("\n");
+    
+    // Жеткирүү акысын кошкондогу жалпы сумма
+    let total = document.getElementById('finalSum').innerText;
+    let deliveryZone = document.getElementById('deliveryType').value == "0" ? "Ноокат ичи" : "Шаар сырты";
+
+    // WhatsApp үчүн даяр шаблон
+    let message = `*ЖАҢЫ ЗАКАЗ (NOOKAT GO)*\n` +
+                  `--------------------------\n` +
+                  `👤 *КАРДАР:* ${name}\n` +
+                  `📍 *ДАРЕК:* ${address}\n` +
+                  `🚚 *ЗОНА:* ${deliveryZone}\n` +
+                  `--------------------------\n` +
+                  `🍴 *ТАМАКТАР:*\n${itemsText}\n\n` +
+                  `💰 *ЖАЛПЫ СУММА:* ${total}\n` +
+                  `--------------------------\n` +
+                  `_Заказ сайттан жөнөтүлдү_`;
+
+    // WhatsApp-ты даяр текст менен ачуу
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`);
 }
 
 function closeProduct() { document.getElementById('productModal').style.display = 'none'; }
 function closeCart() { document.getElementById('cartModal').style.display = 'none'; }
 
 changeLang('kg');
+
