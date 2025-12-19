@@ -83,15 +83,13 @@
                     
                     <div id="mbankDetails" style="display:none; margin-top: 15px; text-align: center; background: white; padding: 15px; border-radius: 12px; border: 2px dashed #2ecc71;">
                         <p style="font-size: 14px; font-weight: bold; margin-bottom: 8px;">Которуу үчүн номер:</p>
-                        
                         <div style="display: flex; align-items: center; justify-content: center; gap: 10px; background: #f9f9f9; padding: 10px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
                             <span style="font-size: 18px; font-weight: 900; color: #333;">0556 61 61 74</span>
                             <button onclick="copyNumber()" style="background: #2ecc71; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px;">
                                 <i class="fas fa-copy"></i>
                             </button>
                         </div>
-                        
-                        <p style="font-size: 12px; color: #666;">Номерди көчүрүп, Мбанктан которуңуз. <br> Төлөп бүтүп, "Заказды жөнөтүү" баскычын басыңыз.</p>
+                        <p style="font-size: 12px; color: #666;">Номерди көчүрүп, Мбанктан которуңуз.</p>
                     </div>
                 </div>
 
@@ -104,41 +102,27 @@
                     <span style="font-weight: 900; font-size: 22px;">Жалпы: <span id="finalSum" style="color: #2ecc71;">0</span> сом</span>
                 </div>
                 
-                <button class="checkout-btn" onclick="checkout()" style="width:100%; background:#25d366; color:white; border:none; padding:18px; border-radius:15px; font-weight:900; font-size: 18px; margin-top: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);">
+                <button class="checkout-btn" onclick="checkout()" style="width:100%; background:#25d366; color:white; border:none; padding:18px; border-radius:15px; font-weight:900; font-size: 18px; margin-top: 15px; cursor: pointer;">
                     <i class="fab fa-whatsapp"></i> ЗАКАЗДЫ ЖӨНӨТҮҮ
                 </button>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
+
     <script>
+        // Интерфейстик жардамчы функциялар
         function toggleMbank(val) {
-            document.getElementById('mbankDetails').style.display = val === 'MBANK' ? 'block' : 'none';
+            const details = document.getElementById('mbankDetails');
+            if(details) details.style.display = val === 'MBANK' ? 'block' : 'none';
         }
 
+        // script.js ичиндеги calculateTotal чакырылбаса, ушул жерден иштейт
         function calculateTotal() {
-            if (typeof cart === 'undefined') return;
-            let subtotal = cart.reduce((a, b) => a + b.price, 0);
-            let delivery = parseInt(document.getElementById('deliveryType').value);
-            document.getElementById('finalSum').innerText = subtotal + delivery;
-        }
-
-        // Номерди көчүрүү функциясы
-        function copyNumber() {
-            const number = "0556616174";
-            navigator.clipboard.writeText(number).then(() => {
-                alert("Номер көчүрүлдү! Эми Мбанкка кирип чаптаңыз.");
-            }).catch(err => {
-                // Кээ бир эски браузерлер үчүн камдык жол
-                const el = document.createElement('textarea');
-                el.value = number;
-                document.body.appendChild(el);
-                el.select();
-                document.execCommand('copy');
-                document.body.removeChild(el);
-                alert("Номер көчүрүлдү!");
-            });
+            if (window.calculateTotal) {
+                window.calculateTotal();
+            }
         }
     </script>
 </body>
