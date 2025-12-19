@@ -4,13 +4,15 @@ const translations = {
         hero: "Ноокаттагы эң мыкты даамдар", search: "Тамак же кафе издөө...", 
         all: "Баары", national: "Улуттук", turkish: "Түрк", pizza: "Пицца", fastfood: "Фастфуд", grill: "Шашлык", drinks: "Суулар",
         add: "Себетке кошуу", total: "Жалпы:", view: "СЕБЕТ", empty: "Себетиңиз бош",
-        alertInfo: "⚠️ Сураныч, атыңызды жана дарегиңизди жазыңыз!"
+        alertInfo: "⚠️ Сураныч, атыңызды жана дарегиңизди жазыңыз!",
+        copied: "Номер көчүрүлдү! Эми Мбанкка кирип чаптаңыз."
     },
     ru: {
         hero: "Лучшая еда в Ноокате", search: "Поиск еды или кафе...", 
         all: "Все", national: "Нац. кухня", turkish: "Турецкая", pizza: "Пицца", fastfood: "Фастфуд", grill: "Шашлык", drinks: "Напитки",
         add: "В корзину", total: "Итого:", view: "КОРЗИНА", empty: "Корзина пуста",
-        alertInfo: "⚠️ Пожалуйста, введите имя и адрес!"
+        alertInfo: "⚠️ Пожалуйста, введите имя и адрес!",
+        copied: "Номер скопирован! Теперь вставьте его в Мбанк."
     }
 };
 
@@ -20,14 +22,10 @@ const products = [
     { id: 2, cat: "national", cafe: "Алай", name_kg: "Чоюлма Лагман", name_ru: "Тянутый Лагман", price: 220, img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c?w=500" },
     { id: 3, cat: "national", cafe: "Ордо", name_kg: "Манты (5 даана)", name_ru: "Манты (5 шт)", price: 200, img: "https://images.unsplash.com/photo-1534422298391-e4f8c170db76?w=500" },
     { id: 4, cat: "national", cafe: "Ак-Тилек", name_kg: "Куурдак", name_ru: "Куурдак", price: 350, img: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=500" },
-    { id: 5, cat: "national", cafe: "Ордо", name_kg: "Босо Лагман", name_ru: "Босо Лагман", price: 230, img: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500" },
-    { id: 9, cat: "turkish", cafe: "Istanbul", name_kg: "Адана Кебаб", name_ru: "Адана Кебаб", price: 380, img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=500" },
     { id: 11, cat: "turkish", cafe: "Ankara", name_kg: "Донер (Лаваш)", name_ru: "Донер (Лаваш)", price: 180, img: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=500" },
     { id: 18, cat: "pizza", cafe: "Pizza Bell", name_kg: "Пепперони", name_ru: "Пепперони", price: 550, img: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500" },
     { id: 25, cat: "fastfood", cafe: "Burger House", name_kg: "Классикалык Бургер", name_ru: "Классический Бургер", price: 150, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" },
-    { id: 33, cat: "grill", cafe: "Шашлык Сити", name_kg: "Кой эти шашлыгы", name_ru: "Баранина шашлык", price: 180, img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500" },
     { id: 41, cat: "drinks", cafe: "Маркет", name_kg: "Кола 1л", name_ru: "Кола 1л", price: 85, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500" }
-    // Башка тамактарды ушул сыяктуу кошо берсеңиз болот...
 ];
 
 let cart = [];
@@ -120,6 +118,22 @@ function searchFood() {
     ));
 }
 
+// НОМЕРДИ КӨЧҮРҮҮ ФУНКЦИЯСЫ
+function copyNumber() {
+    const number = "0556616174";
+    navigator.clipboard.writeText(number).then(() => {
+        alert(translations[currentLang].copied);
+    }).catch(err => {
+        const el = document.createElement('textarea');
+        el.value = number;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        alert(translations[currentLang].copied);
+    });
+}
+
 // ЗАКАЗ БЕРҮҮ ФУНКЦИЯСЫ
 function checkout() {
     if(cart.length === 0) return;
@@ -134,7 +148,7 @@ function checkout() {
         return;
     }
 
-    let phone = "996556616174"; // Сиздин номериңиз
+    let phone = "996556616174"; 
     let itemsText = cart.map(i => `✅ ${currentLang === 'kg' ? i.name_kg : i.name_ru} (${i.price}с)`).join("\n");
     let total = document.getElementById('finalSum').innerText;
     let deliveryZone = deliveryValue == "0" ? "Ноокат ичи (0с)" : "Шаар сырты (150с)";
@@ -159,5 +173,3 @@ function closeCart() { document.getElementById('cartModal').style.display = 'non
 
 // Баштапкы ишке киргизүү
 renderMenu();
-
-
