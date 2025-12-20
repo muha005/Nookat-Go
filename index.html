@@ -43,7 +43,7 @@
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         input, select { width: 100%; padding: 14px; border: 1.5px solid #eee; border-radius: 12px; font-size: 16px; margin: 10px 0; outline: none; }
-        .order-btn { width: 100%; background: #25d366; color: white; padding: 18px; border: none; border-radius: 15px; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .order-btn { width: 100%; background: #2ecc71; color: white; padding: 18px; border: none; border-radius: 15px; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 10px; }
         
         #mbankBox { background: #eafff2; padding: 15px; border: 2px dashed #2ecc71; border-radius: 15px; text-align: center; margin: 10px 0; display: none; }
     </style>
@@ -84,11 +84,14 @@
     </div>
 
     <div id="foodPreviewModal" class="modal" onclick="if(event.target == this) closePreview()">
-        <div class="modal-content" style="text-align: center; border-radius: 30px 30px 30px 30px; margin-bottom: 20px; width: 95%; align-self: center;">
-            <img id="prevImg" src="" style="width: 100%; height: 200px; object-fit: cover; border-radius: 20px;">
+        <div class="modal-content" style="text-align: center; border-radius: 30px; margin-bottom: 20px; width: 95%; align-self: center;">
+            <img id="prevImg" src="" style="width: 100%; height: 220px; object-fit: cover; border-radius: 20px;">
             <h2 id="prevName" style="margin-top:15px; font-size: 22px;"></h2>
+            
+            <p id="prevDesc" style="color: #666; font-size: 14px; margin: 10px 0; line-height: 1.4; padding: 0 10px;"></p>
+            
             <p id="prevPrice" style="color: #2ecc71; font-size: 24px; font-weight: 800; margin: 10px 0;"></p>
-            <button class="order-btn" onclick="confirmAdd()" style="background: #2ecc71; width: 100%; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer;">
+            <button class="order-btn" onclick="confirmAdd()">
                 СЕБЕТКЕ КОШУУ
             </button>
             <button onclick="closePreview()" style="background: none; border: none; color: gray; margin-top: 15px; cursor: pointer; font-size: 16px;">
@@ -125,7 +128,7 @@
                 <span><span id="finalSum">0</span> сом</span>
             </div>
 
-            <button class="order-btn" onclick="sendOrder()">
+            <button class="order-btn" onclick="sendOrder()" style="background: #25d366;">
                 <i class="fab fa-whatsapp"></i> ЖӨНӨТҮҮ
             </button>
         </div>
@@ -147,24 +150,57 @@
         const db = getDatabase(app);
 
         const foods = [
-            { id: 1, cat: "national", kg: "Ош ашы (Плов)", ru: "Ошский Плов", price: 250, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" },
-            { id: 2, cat: "national", kg: "Чоюлма Лагман", ru: "Тянутый Лагман", price: 220, img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c" },
-            { id: 3, cat: "fastfood", kg: "Чизбургер XL", ru: "Чизбургер XL", price: 180, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd" },
-            { id: 4, cat: "fastfood", kg: "Тоок Шаурма", ru: "Куриная Шаурма", price: 160, img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783" },
-            { id: 5, cat: "national", kg: "Манты (5 шт)", ru: "Манты (5 шт)", price: 200, img: "https://images.unsplash.com/photo-1534422298391-e4f8c170db0a" },
-            { id: 6, cat: "fastfood", kg: "Картофель Фри", ru: "Картофель Фри", price: 100, img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877" },
-            { id: 7, cat: "national", kg: "Шорпо", ru: "Шорпо", price: 180, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd" },
-            { id: 8, cat: "fastfood", kg: "Пицца Ассорти", ru: "Пицца Ассорти", price: 450, img: "https://images.unsplash.com/photo-1513104890138-7c749659a591" },
-            { id: 9, cat: "fastfood", kg: "Хот-дог", ru: "Хот-дог", price: 90, img: "https://images.unsplash.com/photo-1541234327333-5586632001fe" },
-            { id: 10, cat: "drinks", kg: "Coca-Cola 1л", ru: "Coca-Cola 1л", price: 85, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97" },
-            { id: 11, cat: "drinks", kg: "Чай кара/жашыл", ru: "Чай", price: 30, img: "https://images.unsplash.com/photo-1544787210-2211d7c928c7" },
-            { id: 12, cat: "drinks", kg: "Максым 0.5л", ru: "Максым 0.5л", price: 50, img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd" },
-            { id: 13, cat: "national", kg: "Самсы (Тандыр)", ru: "Самсы (Тандыр)", price: 80, img: "https://images.unsplash.com/photo-1601050690597-df056fb4ce99" }
+            // NATIONAL (15)
+            { id: 1, cat: "national", kg: "Ош ашы (Плов)", ru: "Ошский Плов", price: 250, desc: "Нукура Ош ашы: девзира күрүч, кой эти, сары сабиз жана табигый татымалдар.", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" },
+            { id: 2, cat: "national", kg: "Чоюлма Лагман", ru: "Тянутый Лагман", price: 220, desc: "Колдо чоюлган камыр, жаңы жашылчалар жана куурулган уй эти.", img: "https://plus.unsplash.com/premium_photo-1664472637341-3ec829d1f4df?w=400" },
+            { id: 5, cat: "national", kg: "Манты (5 шт)", ru: "Манты (5 шт)", price: 200, desc: "Ширелүү кой эти жана пияз менен даярдалган колдун мантысы.", img: "https://images.unsplash.com/photo-1534422298391-e4f8c170db0a?w=400" },
+            { id: 7, cat: "national", kg: "Шорпо", ru: "Шорпо", price: 180, desc: "Койдун этинен кайнатылган витаминдүү жана тунук шорпо.", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400" },
+            { id: 13, cat: "national", kg: "Самсы (Тандыр)", ru: "Самсы (Тандыр)", price: 80, desc: "Тандырга бышкан кытырак камыр жана тууралган эт.", img: "https://images.unsplash.com/photo-1601050690597-df056fb4ce99?w=400" },
+            { id: 14, cat: "national", kg: "Казан Кебаб", ru: "Казан Кебаб", price: 350, desc: "Казанда куурулган эт жана кызарган картошка.", img: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=400" },
+            { id: 15, cat: "national", kg: "Беш Бармак", ru: "Беш Бармак", price: 400, desc: "Жылкы эти, кесме жана атайын чык соусу менен.", img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c?w=400" },
+            { id: 16, cat: "national", kg: "Дымдама", ru: "Дымдама", price: 210, desc: "Өз ширесинде дымдалган жашылчалар жана эт.", img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" },
+            { id: 17, cat: "national", kg: "Ганфан", ru: "Ганфан", price: 190, desc: "Ак күрүч жана жашылча-эт соусу менен.", img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c?w=400" },
+            { id: 18, cat: "national", kg: "Босо Лагман", ru: "Босо Лагман", price: 230, desc: "Куурулган лагман, камыры кытырак жана даамдуу.", img: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400" },
+            { id: 19, cat: "national", kg: "Чүчвара", ru: "Чучвара", price: 170, desc: "Майда түйүлгөн пельмендер жана эт шорпосу.", img: "https://images.unsplash.com/photo-1534422298391-e4f8c170db0a?w=400" },
+            { id: 20, cat: "national", kg: "Оромо", ru: "Оромо", price: 160, desc: "Бууга бышкан камыр, ичинде картошка жана эт.", img: "https://images.unsplash.com/photo-1601050690597-df056fb4ce99?w=400" },
+            { id: 21, cat: "national", kg: "Куурдак", ru: "Куурдак", price: 320, desc: "Пиязга куурулган кой эти жана картошка.", img: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400" },
+            { id: 22, cat: "national", kg: "Мастава", ru: "Мастава", price: 150, desc: "Күрүч жана жашылчалар кошулган тойлумдуу шорпо.", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400" },
+            { id: 23, cat: "national", kg: "Күрүч аш", ru: "Рисовый суп", price: 140, desc: "Жеңил жана пайдалуу күрүч шорпосу.", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" },
+
+            // FASTFOOD (15)
+            { id: 3, cat: "fastfood", kg: "Чизбургер XL", ru: "Чизбургер XL", price: 180, desc: "Ширелүү котлета, Чеддер сыры жана атайын бургер соусу.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" },
+            { id: 4, cat: "fastfood", kg: "Тоок Шаурма", ru: "Куриная Шаурма", price: 160, desc: "Гриль тоок эти, бадыраң, помидор жана картошка фри лавашта.", img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400" },
+            { id: 6, cat: "fastfood", kg: "Картофель Фри", ru: "Картофель Фри", price: 100, desc: "Кытырак алтын түстөгү картошка таякчалары.", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400" },
+            { id: 8, cat: "fastfood", kg: "Пицца Ассорти", ru: "Пицца Ассорти", price: 450, desc: "Колбаса, гриб, сыр жана помидор кошулган 30см пицца.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400" },
+            { id: 9, cat: "fastfood", kg: "Хот-дог XXL", ru: "Хот-дог XXL", price: 110, desc: "Узун сосиска, жумшак нан жана кетчуп-майонез.", img: "https://images.unsplash.com/photo-1541234327333-5586632001fe?w=400" },
+            { id: 24, cat: "fastfood", kg: "Пицца Пепперони", ru: "Пицца Пепперони", price: 430, desc: "Ачуу колбаса жана Моцарелла сыры менен.", img: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400" },
+            { id: 25, cat: "fastfood", kg: "Наггетсы (10 шт)", ru: "Наггетсы", price: 150, desc: "Тоок этинен жасалган кытырак наггетстер.", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400" },
+            { id: 26, cat: "fastfood", kg: "Гамбургер", ru: "Гамбургер", price: 150, desc: "Классикалык бургер: котлета, пияз жана салат.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" },
+            { id: 27, cat: "fastfood", kg: "Крылышки BBQ", ru: "Крылышки BBQ", price: 280, desc: "BBQ соусундагы тоок канаттары (8 даана).", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400" },
+            { id: 28, cat: "fastfood", kg: "Пицца Маргарита", ru: "Пицца Маргарита", price: 380, desc: "Сыр жана томат соусу кошулган жеңил пицца.", img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400" },
+            { id: 29, cat: "fastfood", kg: "Сэндвич Клаб", ru: "Клаб Сэндвич", price: 190, desc: "Үч кабаттуу нан, жумуртка жана ветчина менен.", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400" },
+            { id: 30, cat: "fastfood", kg: "Донар Кебаб", ru: "Донер Кебаб", price: 170, desc: "Түрк нанындагы ширелүү эт жана жашылчалар.", img: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=400" },
+            { id: 31, cat: "fastfood", kg: "Твистер", ru: "Твистер", price: 140, desc: "Кытырак тоок эти лавашка оролгон.", img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400" },
+            { id: 32, cat: "fastfood", kg: "Сырные палочки", ru: "Сырные палочки", price: 160, desc: "Эриген сыр жана кытырак кабык.", img: "https://images.unsplash.com/photo-1531496681078-2742ed47fba8?w=400" },
+            { id: 33, cat: "fastfood", kg: "Пицца Грибная", ru: "Пицца с грибами", price: 410, desc: "Шампиньон грибдери жана сыр менен.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400" },
+
+            // DRINKS (10)
+            { id: 10, cat: "drinks", kg: "Coca-Cola 1л", ru: "Coca-Cola 1л", price: 85, desc: "Классикалык газдуу суусундук.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400" },
+            { id: 11, cat: "drinks", kg: "Чай кара/жашыл", ru: "Чай", price: 30, desc: "Ысык демделген чай. Лимон жана кант менен.", img: "https://images.unsplash.com/photo-1544787210-2211d7c928c7?w=400" },
+            { id: 12, cat: "drinks", kg: "Максым 0.5л", ru: "Максым 0.5л", price: 50, desc: "Кыргыздын улуттук ачытылган суусундугу.", img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400" },
+            { id: 34, cat: "drinks", kg: "Fanta 1л", ru: "Fanta 1л", price: 85, desc: "Апельсин даамындагы суусундук.", img: "https://images.unsplash.com/photo-1624517452488-04869289c4ca?w=400" },
+            { id: 35, cat: "drinks", kg: "Sprite 1л", ru: "Sprite 1л", price: 85, desc: "Лимон-лайм даамындагы суусундук.", img: "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400" },
+            { id: 36, cat: "drinks", kg: "Суу (Газсыз) 0.5л", ru: "Вода 0.5л", price: 30, desc: "Таза булак суусу.", img: "https://images.unsplash.com/photo-1548919973-5dea585f3951?w=400" },
+            { id: 37, cat: "drinks", kg: "Кофе Американо", ru: "Кофе Американо", price: 100, desc: "Жаңы тартылган кофе.", img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400" },
+            { id: 38, cat: "drinks", kg: "Компот 1л", ru: "Компот 1л", price: 100, desc: "Үй шартында кургатылган жемиштерден.", img: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400" },
+            { id: 39, cat: "drinks", kg: "Айран 0.5л", ru: "Кефир 0.5л", price: 50, desc: "Муздак жана табигый айран.", img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400" },
+            { id: 40, cat: "drinks", kg: "Шире (Сок) 1л", ru: "Сок 1л", price: 120, desc: "Ар кандай жемиштерден жасалган шире.", img: "https://images.unsplash.com/photo-1543218024-57a70143c369?w=400" }
         ];
 
         let cart = [];
         let lang = 'kg';
         let tempFood = null;
+        const noImg = "https://via.placeholder.com/400x300?text=Nookat+Go";
 
         window.setLang = (l) => {
             lang = l;
@@ -178,7 +214,7 @@
             const grid = document.getElementById('menu-grid');
             grid.innerHTML = items.map(f => `
                 <div class="food-card" onclick="openPreview(${f.id})">
-                    <img src="${f.img}">
+                    <img src="${f.img}" onerror="this.src='${noImg}'">
                     <div class="food-info">
                         <h3>${lang === 'kg' ? f.kg : f.ru}</h3>
                         <div class="food-price">${f.price} сом</div>
@@ -187,11 +223,12 @@
             `).join('');
         }
 
-        // ПРЕВЬЮ АЧУУ
         window.openPreview = (id) => {
             tempFood = foods.find(x => x.id === id);
             document.getElementById('prevImg').src = tempFood.img;
+            document.getElementById('prevImg').onerror = function() { this.src = noImg; };
             document.getElementById('prevName').innerText = lang === 'kg' ? tempFood.kg : tempFood.ru;
+            document.getElementById('prevDesc').innerText = tempFood.desc || "";
             document.getElementById('prevPrice').innerText = tempFood.price + " сом";
             document.getElementById('foodPreviewModal').style.display = 'flex';
         };
@@ -200,7 +237,6 @@
             document.getElementById('foodPreviewModal').style.display = 'none';
         };
 
-        // ТАСТЫКТОО ЖАНА СЕБЕТКЕ КОШУУ
         window.confirmAdd = () => {
             cart.push(tempFood);
             updateBar();
@@ -282,6 +318,7 @@
     </script>
 </body>
 </html>
+
 
 
 
