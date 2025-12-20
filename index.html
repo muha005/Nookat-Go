@@ -230,28 +230,61 @@
             render(c === 'all' ? foods : foods.filter(f => f.cat === c));
         };
 
-        window.sendOrder = async () => {
-            const n = document.getElementById('uName').value;
-            const a = document.getElementById('uAddr').value;
-            const p = document.getElementById('payment').value;
-            const s = document.getElementById('finalSum').innerText;
+       window.sendOrder = async () => {
+    const n = document.getElementById('uName').value.trim();
+    const a = document.getElementById('uAddr').value.trim();
+    const p = document.getElementById('payment').value;
+    const s = document.getElementById('finalSum').innerText;
 
-            if(!n || !a) return alert("Атыңызды жана дарегиңизди жазыңыз!");
+    if (!n || !a) return alert("Введите имя и адрес");
+    if (cart.length === 0) return alert("Корзина пуста");
 
-            const items = cart.map(f => f.kg).join(", ");
-            const msg = `🚀 *ЖАҢЫ ЗАКАЗ*\n👤 *Аты:* ${n}\n📍 *Дарек:* ${a}\n🍴 *Тамактар:* ${items}\n💳 *Төлөм:* ${p}\n💰 *Сумма:* ${s} сом`;
+    const itemsText = cart
+        .map((f, i) => ${i + 1}. ${lang === 'kg' ? f.kg : f.ru} – ${f.price} сом)
+        .join('\n');
 
-            try {
-                await set(push(ref(db, 'orders')), { name: n, addr: a, items, sum: s, pay: p, date: new Date().toLocaleString() });
-            } catch (e) {}
+    const message =
+`NEW ORDER (Nookat Go)
 
-            window.open(`https://wa.me/996556616174?text=${encodeURIComponent(msg)}`, '_blank');
-            cart = []; updateBar(); closeCart();
-        };
+Name: ${n}
+Address: ${a}
+
+Items:
+${itemsText}
+
+Payment: ${p}
+Total: ${s} сом`;
+
+    const phone = "996556616174";
+    const waUrl = https://wa.me/${556616174}?text=${encodeURIComponent(message)};
+    window.open(waUrl, "_blank");
+
+    try {
+        await set(push(ref(db, 'orders')), {
+            name: n,
+            address: a,
+            items: cart.map(f => ({
+                kg: f.kg,
+                ru: f.ru,
+                price: f.price
+            })),
+            total: s,
+            payment: p,
+            createdAt: new Date().toISOString()
+        });
+    } catch (e) {
+        console.error(e);
+    }
+
+    cart = [];
+    updateBar();
+    closeCart();
+};
 
         render();
     </script>
 </body>
 </html>
+
 
 
