@@ -30,6 +30,8 @@
         <div class="categories">
             <button class="cat-item active" onclick="window.filterMenu('all', event)">Баары</button>
             <button class="cat-item" onclick="window.filterMenu('national', event)">Улуттук</button>
+            <button class="cat-item" onclick="window.filterMenu('fastfood', event)">Фастфуд</button>
+            <button class="cat-item" onclick="window.filterMenu('pizza', event)">Пицца</button>
             <button class="cat-item" onclick="window.filterMenu('drinks', event)">Суулар</button>
         </div>
     </div>
@@ -37,7 +39,7 @@
     <main id="menu-grid" class="menu-grid"></main>
 
     <div id="cartBar" class="bottom-cart" onclick="window.showCart()" style="display:none;">
-        <div><span id="cartCount">0</span> <span>СЕБЕТ</span></div>
+        <div><span id="cartCount">0</span> <span id="cartText">СЕБЕТ</span></div>
         <div><span id="cartSum">0</span> сом</div>
     </div>
 
@@ -53,31 +55,34 @@
 
     <div id="cartModal" class="modal-overlay" onclick="if(event.target == this) window.closeCart()">
         <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
-            <h2 style="padding:20px;">Себетиңиз</h2>
+            <h2 id="cartTitle" style="padding:20px;">Себетиңиз</h2>
             <div id="cartList" style="padding: 0 20px;"></div>
             
             <div style="padding: 20px;">
                 <label>Жеткирүү аймагы:</label>
-                <select id="deliveryType" onchange="window.calculateTotal()" style="width:100%; padding:10px; margin:10px 0;">
+                <select id="deliveryType" onchange="window.calculateTotal()" style="width:100%; padding:10px; margin:10px 0; border-radius: 10px; border: 1px solid #ddd;">
                     <option value="0">Ноокат ичи (Акысыз)</option>
                     <option value="150">Шаар сырты (+150 сом)</option>
                 </select>
 
                 <label>Төлөм ыкмасы:</label>
-                <select id="paymentMethod" onchange="window.toggleMbank(this.value)" style="width:100%; padding:10px; margin:10px 0;">
-                    <option value="Налички">💵 Налички</option>
-                    <option value="MBANK">💎 MBANK</option>
+                <select id="paymentMethod" onchange="window.toggleMbank(this.value)" style="width:100%; padding:10px; margin:10px 0; border-radius: 10px; border: 1px solid #ddd;">
+                    <option value="Налички">💵 Налички (Курьерге)</option>
+                    <option value="MBANK">💎 MBANK (Которуу)</option>
                 </select>
 
-                <div id="mbankDetails" style="display:none; background:#f0fff0; padding:10px; border:1px dashed green; text-align:center;">
-                    <p>0556 61 61 74 <button onclick="window.copyNumber()">📋</button></p>
+                <div id="mbankDetails" style="display:none; background:#f0fff0; padding:15px; border:2px dashed green; text-align:center; border-radius: 10px; margin: 10px 0;">
+                    <p style="font-weight: bold; margin-bottom: 5px;">0556 61 61 74</p>
+                    <button onclick="window.copyNumber()" style="background: green; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Көчүрүү 📋</button>
                 </div>
 
-                <input type="text" id="userName" placeholder="Атыңыз..." style="width:100%; padding:12px; margin-top:10px;">
-                <input type="text" id="userAddress" placeholder="Дарегиңиз..." style="width:100%; padding:12px; margin-top:10px;">
+                <input type="text" id="userName" placeholder="Атыңыз..." style="width:100%; padding:12px; margin-top:10px; border: 1px solid #ddd; border-radius: 10px;">
+                <input type="text" id="userAddress" placeholder="Дарегиңиз (мис: Ленин 15)..." style="width:100%; padding:12px; margin-top:10px; border: 1px solid #ddd; border-radius: 10px;">
                 
-                <h3 style="margin-top:15px;">Жалпы: <span id="finalSum">0</span> сом</h3>
-                <button onclick="window.checkout()" style="width:100%; background:#25d366; color:white; padding:15px; border:none; border-radius:10px; font-weight:900; margin-top:10px;">ЗАКАЗДЫ ЖӨНӨТҮҮ</button>
+                <h3 style="margin-top:20px;">Жалпы: <span id="finalSum" style="color: #2ecc71;">0</span> сом</h3>
+                <button onclick="window.checkout()" style="width:100%; background:#25d366; color:white; padding:18px; border:none; border-radius:15px; font-weight:900; margin-top:15px; font-size: 18px; cursor: pointer;">
+                    <i class="fab fa-whatsapp"></i> ЗАКАЗДЫ ЖӨНӨТҮҮ
+                </button>
             </div>
         </div>
     </div>
@@ -97,10 +102,16 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
+        // БААРДЫК ТАМАКТАР ТИЗМЕСИ
         const products = [
-            { id: 1, cat: "national", name_kg: "Ош ашы (Плов)", name_ru: "Ошский Плов", price: 250, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" },
-            { id: 2, cat: "national", name_kg: "Чоюлма Лагман", name_ru: "Тянутый Лагман", price: 220, img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c" },
-            { id: 3, cat: "drinks", name_kg: "Coca-Cola 1л", name_ru: "Coca-Cola 1л", price: 85, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97" }
+            { id: 1, cat: "national", cafe: "Ордо", name_kg: "Ош ашы (Плов)", name_ru: "Ошский Плов", price: 250, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" },
+            { id: 2, cat: "national", cafe: "Алай", name_kg: "Чоюлма Лагман", name_ru: "Тянутый Лагман", price: 220, img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c" },
+            { id: 3, cat: "fastfood", cafe: "Burger House", name_kg: "Чизбургер", name_ru: "Чизбургер", price: 180, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd" },
+            { id: 4, cat: "fastfood", cafe: "Burger House", name_kg: "Шаурма (Тоок)", name_ru: "Шаурма (Куриная)", price: 160, img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783" },
+            { id: 5, cat: "pizza", cafe: "Dodo", name_kg: "Пицца Маргарита", name_ru: "Пицца Маргарита", price: 450, img: "https://images.unsplash.com/photo-1574071318508-1cdbad80ad50" },
+            { id: 6, cat: "pizza", cafe: "Dodo", name_kg: "Пицца Ассорти", name_ru: "Пицца Ассорти", price: 550, img: "https://images.unsplash.com/photo-1513104890138-7c749659a591" },
+            { id: 7, cat: "drinks", cafe: "Маркет", name_kg: "Coca-Cola 1л", name_ru: "Coca-Cola 1л", price: 85, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97" },
+            { id: 8, cat: "drinks", cafe: "Маркет", name_kg: "Чай (Кара/Жашыл)", name_ru: "Чай (Черный/Зеленый)", price: 30, img: "https://images.unsplash.com/photo-1544787210-2211d7c928c7" }
         ];
 
         let cart = [];
@@ -110,6 +121,8 @@
             currentLang = l;
             document.getElementById('lang-kg').classList.toggle('active', l === 'kg');
             document.getElementById('lang-ru').classList.toggle('active', l === 'ru');
+            document.getElementById('hero-title').innerText = l === 'kg' ? "Ноокаттагы эң мыкты даамдар" : "Лучшая еда в Ноокате";
+            document.getElementById('cartText').innerText = l === 'kg' ? "СЕБЕТ" : "КОРЗИНА";
             window.renderMenu();
         };
 
@@ -118,8 +131,11 @@
             grid.innerHTML = data.map(p => `
                 <div class="food-card" onclick="window.openProduct(${p.id})">
                     <img src="${p.img}">
-                    <h3>${currentLang === 'kg' ? p.name_kg : p.name_ru}</h3>
-                    <span>${p.price} сом</span>
+                    <div class="card-info">
+                        <h3>${currentLang === 'kg' ? p.name_kg : p.name_ru}</h3>
+                        <p style="font-size: 12px; color: #777;">${p.cafe}</p>
+                        <span class="card-price">${p.price} сом</span>
+                    </div>
                 </div>
             `).join('');
         };
@@ -128,7 +144,9 @@
             const p = products.find(x => x.id === id);
             document.getElementById('modalImg').src = p.img;
             document.getElementById('modalName').innerText = currentLang === 'kg' ? p.name_kg : p.name_ru;
-            document.getElementById('addBtnAction').onclick = () => {
+            const btn = document.getElementById('addBtnAction');
+            btn.innerText = currentLang === 'kg' ? `Кошуу - ${p.price}с` : `Добавить - ${p.price}с`;
+            btn.onclick = () => {
                 cart.push(p);
                 window.updateCartUI();
                 window.closeProduct();
@@ -147,9 +165,9 @@
             document.getElementById('cartModal').style.display = 'flex';
             const list = document.getElementById('cartList');
             list.innerHTML = cart.map((item, i) => `
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <span>${item.name_kg}</span>
-                    <b>${item.price}с <button onclick="window.removeItem(${i})" style="color:red; border:none; background:none;">✕</button></b>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #eee;">
+                    <span>${currentLang === 'kg' ? item.name_kg : item.name_ru}</span>
+                    <b>${item.price}с <button onclick="window.removeItem(${i})" style="color:red; border:none; background:none; font-size:18px; margin-left:10px;">✕</button></b>
                 </div>
             `).join('');
             window.calculateTotal();
@@ -178,35 +196,50 @@
             const pay = document.getElementById('paymentMethod').value;
             const final = document.getElementById('finalSum').innerText;
 
-            if(!name || !addr) return alert("Атыңызды жана дарегиңизди жазыңыз!");
+            if(!name || !addr) {
+                alert(currentLang === 'kg' ? "Атыңызды жана дарегиңизди жазыңыз!" : "Введите имя и адрес!");
+                return;
+            }
 
             const itemsText = cart.map(i => i.name_kg).join(", ");
 
             try {
-                // Firebase'ге жазуу
+                // БАЗАГА ЖАЗУУ (Firebase)
                 const ordersRef = ref(database, 'orders');
-                await set(push(ordersRef), {
-                    customerName: name, address: addr, items: itemsText, totalPrice: final, paymentMethod: pay, time: new Date().toLocaleString()
+                const newOrderRef = push(ordersRef);
+                await set(newOrderRef, {
+                    customerName: name,
+                    address: addr,
+                    items: itemsText,
+                    totalPrice: final,
+                    paymentMethod: pay,
+                    time: new Date().toLocaleString(),
+                    status: "new"
                 });
 
-                // WhatsApp ачуу
-                const msg = `🚀 ЗАКАЗ\n👤 Аты: ${name}\n📍 Дарек: ${addr}\n🍴 Тамактар: ${itemsText}\n💰 Сумма: ${final} сом\n💳 Төлөм: ${pay}`;
+                // WHATSAPP АЧУУ
+                const msg = `🚀 *ЖАҢЫ ЗАКАЗ (Nookat Go)*\n\n👤 *Аты:* ${name}\n📍 *Дарек:* ${addr}\n🍴 *Тамактар:* ${itemsText}\n💰 *Сумма:* ${final} сом\n💳 *Төлөм:* ${pay}`;
                 window.open(`https://wa.me/996556616174?text=${encodeURIComponent(msg)}`);
 
                 cart = [];
                 window.updateCartUI();
                 window.closeCart();
-            } catch (e) { alert("Ката: " + e.message); }
+                alert(currentLang === 'kg' ? "Заказ кабыл алынды!" : "Заказ принят!");
+            } catch (e) { 
+                alert("Error: " + e.message); 
+            }
         };
 
         window.closeProduct = () => document.getElementById('productModal').style.display = 'none';
         window.closeCart = () => document.getElementById('cartModal').style.display = 'none';
-        window.copyNumber = () => { navigator.clipboard.writeText("0556616174"); alert("Номер көчүрүлдү!"); };
+        window.copyNumber = () => { navigator.clipboard.writeText("0556616174"); alert("0556616174 көчүрүлдү!"); };
+        
         window.searchFood = () => {
             const val = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = products.filter(p => p.name_kg.toLowerCase().includes(val) || p.name_ru.toLowerCase().includes(val));
+            const filtered = products.filter(p => p.name_kg.toLowerCase().includes(val) || p.name_ru.toLowerCase().includes(val) || p.cafe.toLowerCase().includes(val));
             window.renderMenu(filtered);
         };
+
         window.filterMenu = (c, e) => {
             document.querySelectorAll('.cat-item').forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
