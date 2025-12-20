@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
 import { getDatabase, ref, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
-// 1. Firebase Конфигурациясы (Сиздин базаңыздын маалыматтары)
+// 1. Firebase Конфигурациясы
 const firebaseConfig = {
     apiKey: "AIzaSyCjsFILpJUY9K1gyJx-f8-9BkFu7T3-g-A",
     authDomain: "nookat-go-6fcf5.firebaseapp.com",
@@ -13,7 +13,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// 2. 13 ТАМАК - Эң жогорку сапаттагы маалыматтар
+// 2. 13 ТАМАК - Маалыматтар
 const foods = [
     { id: 1, cat: "national", kg: "Ош ашы (Плов)", ru: "Ошский Плов", price: 250, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" },
     { id: 2, cat: "national", kg: "Чоюлма Лагман", ru: "Тянутый Лагман", price: 220, img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c" },
@@ -32,8 +32,9 @@ const foods = [
 
 let cart = [];
 let lang = 'kg';
+let selectedFood = null; // Тандалган тамакты убактылуу сактоо
 
-// 3. Менюну чыгаруу (Катасыз)
+// 3. Менюну чыгаруу
 window.renderMenu = (items = foods) => {
     const grid = document.querySelector('.menu-grid') || document.getElementById('menuGrid');
     if (!grid) return;
@@ -48,15 +49,35 @@ window.renderMenu = (items = foods) => {
     `).join('');
 };
 
-// 4. Себетке кошуу жана жаңылоо
+// 4. ТАМАКТЫ БАСКАНДА: Алдын ала көрүү терезесин ачуу
 window.addToCart = (id) => {
-    const product = foods.find(x => x.id === id);
-    if (product) {
-        cart.push(product);
-        updateCartBar();
+    selectedFood = foods.find(x => x.id === id);
+    if (selectedFood) {
+        document.getElementById('prevImg').src = selectedFood.img;
+        document.getElementById('prevName').innerText = lang === 'kg' ? selectedFood.kg : selectedFood.ru;
+        document.getElementById('prevPrice').innerText = selectedFood.price + " сом";
+        
+        const previewModal = document.getElementById('foodPreviewModal');
+        if (previewModal) previewModal.style.display = 'flex';
     }
 };
 
+// 5. ТЕРЕЗЕДЕН "КОШУУ" БАСКЫЧЫН БАСКАНДА: Себетке кошуу
+window.confirmAdd = () => {
+    if (selectedFood) {
+        cart.push({...selectedFood, cartId: Date.now()});
+        updateCartBar();
+        closePreview();
+    }
+};
+
+window.closePreview = () => {
+    const previewModal = document.getElementById('foodPreviewModal');
+    if (previewModal) previewModal.style.display = 'none';
+    selectedFood = null;
+};
+
+// 6. Себеттин төмөнкү баскычын жаңылоо
 function updateCartBar() {
     const sum = cart.reduce((a, b) => a + b.price, 0);
     const bar = document.getElementById('cartBar');
@@ -67,14 +88,14 @@ function updateCartBar() {
     }
 }
 
-// 5. Себетти ачуу жана башкаруу
+// 7. Себетти ачуу
 window.openCart = () => {
     document.getElementById('cartModal').style.display = 'flex';
     const list = document.getElementById('cartItemsList');
     list.innerHTML = cart.map((f, i) => `
         <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;">
             <span style="font-size:14px;">${lang === 'kg' ? f.kg : f.ru}</span>
-            <b>${f.price}с <i class="fas fa-trash" style="color:red; margin-left:10px;" onclick="removeFromCart(${i})"></i></b>
+            <b>${f.price}с <i class="fas fa-trash" style="color:red; margin-left:10px; cursor:pointer;" onclick="removeFromCart(${i})"></i></b>
         </div>
     `).join('');
     calculateTotal();
@@ -88,11 +109,12 @@ window.removeFromCart = (i) => {
 
 window.calculateTotal = () => {
     const sub = cart.reduce((a, b) => a + b.price, 0);
-    const del = parseInt(document.getElementById('delivType').value || 0);
+    const delInput = document.getElementById('delivType');
+    const del = delInput ? parseInt(delInput.value || 0) : 0;
     document.getElementById('finalPrice').innerText = sub + del;
 };
 
-// 6. ЗАКАЗ ЖӨНӨТҮҮ - WHATSAPP + FIREBASE (Телефон үчүн оптималдаштырылган)
+// 8. ЗАКАЗ ЖӨНӨТҮҮ
 window.sendOrder = async () => {
     const name = document.getElementById('userName').value.trim();
     const addr = document.getElementById('userAddress').value.trim();
@@ -106,10 +128,8 @@ window.sendOrder = async () => {
 
     const waUrl = `https://api.whatsapp.com/send?phone=996556616174&text=${encodeURIComponent(msg)}`;
 
-    // 1. Бөгөттөөсүз WhatsApp-ка өтүү
     window.location.href = waUrl;
 
-    // 2. Фондо Firebase-ге жазуу
     try {
         const ordersRef = ref(db, 'orders');
         await set(push(ordersRef), {
@@ -118,11 +138,10 @@ window.sendOrder = async () => {
         });
     } catch (e) { console.log("Database write skipped"); }
 
-    // Себетти тазалоо
     cart = []; updateCartBar(); closeCart();
 };
 
-// 7. Издөө жана Фильтр
+// 9. Издөө жана Фильтр
 window.searchFood = () => {
     const q = document.getElementById('searchInput').value.toLowerCase();
     renderMenu(foods.filter(f => f.kg.toLowerCase().includes(q) || f.ru.toLowerCase().includes(q)));
@@ -135,9 +154,15 @@ window.filterMenu = (c, e) => {
 };
 
 // Кошумча функциялар
-window.toggleMbank = (v) => document.getElementById('mbank-info').style.display = v === 'MBANK' ? 'block' : 'none';
+window.toggleMbank = (v) => {
+    const mbInfo = document.getElementById('mbank-info');
+    if(mbInfo) mbInfo.style.display = v === 'MBANK' ? 'block' : 'none';
+};
 window.closeCart = () => document.getElementById('cartModal').style.display = 'none';
-window.copyPhone = () => { navigator.clipboard.writeText("556616174"); alert("Көчүрүлдү!"); };
+window.copyPhone = () => { 
+    navigator.clipboard.writeText("556616174"); 
+    alert("Көчүрүлдү!"); 
+};
 
 // Ишти баштоо
 renderMenu();
