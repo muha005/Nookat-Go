@@ -30,30 +30,22 @@
         <div class="categories">
             <button class="cat-item active" onclick="window.filterMenu('all', event)">Баары</button>
             <button class="cat-item" onclick="window.filterMenu('national', event)">Улуттук</button>
-            <button class="cat-item" onclick="window.filterMenu('turkish', event)">Түрк</button>
-            <button class="cat-item" onclick="window.filterMenu('pizza', event)">Пицца</button>
-            <button class="cat-item" onclick="window.filterMenu('fastfood', event)">Фастфуд</button>
-            <button class="cat-item" onclick="window.filterMenu('grill', event)">Шашлык</button>
             <button class="cat-item" onclick="window.filterMenu('drinks', event)">Суулар</button>
         </div>
     </div>
 
     <main id="menu-grid" class="menu-grid"></main>
 
-    <div id="cartBar" class="bottom-cart" onclick="window.showCart()">
-        <div>
-            <span id="cartCount">0</span>
-            <span id="cart-view-text">СЕБЕТ</span>
-        </div>
+    <div id="cartBar" class="bottom-cart" onclick="window.showCart()" style="display:none;">
+        <div><span id="cartCount">0</span> <span>СЕБЕТ</span></div>
         <div><span id="cartSum">0</span> сом</div>
     </div>
 
     <div id="productModal" class="modal-overlay" onclick="if(event.target == this) window.closeProduct()">
         <div class="modal-content">
-            <img id="modalImg" src="" alt="">
+            <img id="modalImg" src="">
             <div class="modal-info">
                 <h2 id="modalName"></h2>
-                <p id="modalDesc" style="color: #666; margin: 10px 0;"></p>
                 <button id="addBtnAction" class="add-to-cart-big">Себетке кошуу</button>
             </div>
         </div>
@@ -61,62 +53,168 @@
 
     <div id="cartModal" class="modal-overlay" onclick="if(event.target == this) window.closeCart()">
         <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
-            <h2 style="padding: 20px 20px 10px;">Сиздин себетиңиз</h2>
-            
+            <h2 style="padding:20px;">Себетиңиз</h2>
             <div id="cartList" style="padding: 0 20px;"></div>
-
+            
             <div style="padding: 20px;">
-                <div style="margin-bottom: 15px;">
-                    <label style="font-size: 13px; font-weight: 900; color: #444;">ЖЕТКИРҮҮ АЙМАГЫ:</label>
-                    <select id="deliveryType" onchange="window.calculateTotal()" style="width:100%; padding:14px; border-radius:12px; border:2px solid #eee; margin-top: 5px; font-size: 16px;">
-                        <option value="0">Ноокат ичи (Акысыз)</option>
-                        <option value="150">Шаар сырты (+150 сом)</option>
-                    </select>
+                <label>Жеткирүү аймагы:</label>
+                <select id="deliveryType" onchange="window.calculateTotal()" style="width:100%; padding:10px; margin:10px 0;">
+                    <option value="0">Ноокат ичи (Акысыз)</option>
+                    <option value="150">Шаар сырты (+150 сом)</option>
+                </select>
+
+                <label>Төлөм ыкмасы:</label>
+                <select id="paymentMethod" onchange="window.toggleMbank(this.value)" style="width:100%; padding:10px; margin:10px 0;">
+                    <option value="Налички">💵 Налички</option>
+                    <option value="MBANK">💎 MBANK</option>
+                </select>
+
+                <div id="mbankDetails" style="display:none; background:#f0fff0; padding:10px; border:1px dashed green; text-align:center;">
+                    <p>0556 61 61 74 <button onclick="window.copyNumber()">📋</button></p>
                 </div>
 
-                <div style="background: #f1f5ff; padding: 15px; border-radius: 15px; border: 1px solid #d1dbff; margin-bottom: 15px;">
-                    <label style="font-size: 13px; font-weight: 900; color: #444;">ТӨЛӨМ ЫКМАСЫ:</label>
-                    <select id="paymentMethod" onchange="window.toggleMbank(this.value)" style="width:100%; padding:14px; border-radius:12px; border:2px solid #eee; margin-top: 5px; font-weight: bold; font-size: 16px;">
-                        <option value="Налички">💵 Налички (Курьерге)</option>
-                        <option value="MBANK">💎 MBANK (Которуу)</option>
-                    </select>
-                    
-                    <div id="mbankDetails" style="display:none; margin-top: 15px; text-align: center; background: white; padding: 15px; border-radius: 12px; border: 2px dashed #2ecc71;">
-                        <p style="font-size: 14px; font-weight: bold; margin-bottom: 8px;">Которуу үчүн номер:</p>
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; background: #f9f9f9; padding: 10px; border-radius: 10px; border: 1px solid #eee; margin-bottom: 10px;">
-                            <span style="font-size: 18px; font-weight: 900; color: #333;">0556 61 61 74</span>
-                            <button onclick="window.copyNumber()" style="background: #2ecc71; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px;">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                        </div>
-                        <p style="font-size: 12px; color: #666;">Номерди көчүрүп, Мбанктан которуңуз.</p>
-                    </div>
-                </div>
-
-                <div style="background: #f9f9f9; padding: 15px; border-radius: 15px;">
-                    <input type="text" id="userName" placeholder="Атыңыз..." style="width:100%; padding:14px; border-radius:12px; border:2px solid #eee; margin-bottom: 10px; font-size: 16px; outline: none;">
-                    <input type="text" id="userAddress" placeholder="Дарегиңиз (мис: Ленин 15)..." style="width:100%; padding:14px; border-radius:12px; border:2px solid #eee; font-size: 16px; outline: none;">
-                </div>
-
-                <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-weight: 900; font-size: 22px;">Жалпы: <span id="finalSum" style="color: #2ecc71;">0</span> сом</span>
-                </div>
+                <input type="text" id="userName" placeholder="Атыңыз..." style="width:100%; padding:12px; margin-top:10px;">
+                <input type="text" id="userAddress" placeholder="Дарегиңиз..." style="width:100%; padding:12px; margin-top:10px;">
                 
-                <button class="checkout-btn" onclick="window.checkout()" style="width:100%; background:#25d366; color:white; border:none; padding:18px; border-radius:15px; font-weight:900; font-size: 18px; margin-top: 15px; cursor: pointer;">
-                    <i class="fab fa-whatsapp"></i> ЗАКАЗДЫ ЖӨНӨТҮҮ
-                </button>
+                <h3 style="margin-top:15px;">Жалпы: <span id="finalSum">0</span> сом</h3>
+                <button onclick="window.checkout()" style="width:100%; background:#25d366; color:white; padding:15px; border:none; border-radius:10px; font-weight:900; margin-top:10px;">ЗАКАЗДЫ ЖӨНӨТҮҮ</button>
             </div>
         </div>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
-    <script>
-        // Интерфейстик анимациялар үчүн
-        function toggleMbank(val) {
-            const details = document.getElementById('mbankDetails');
-            if(details) details.style.display = val === 'MBANK' ? 'block' : 'none';
-        }
+        const firebaseConfig = {
+            apiKey: "AIzaSyCjsFILpJUY9K1gyJx-f8-9BkFu7T3-g-A",
+            authDomain: "nookat-go-6fcf5.firebaseapp.com",
+            projectId: "nookat-go-6fcf5",
+            databaseURL: "https://nookat-go-6fcf5-default-rtdb.firebaseio.com/",
+            appId: "1:423808562168:web:7cabb4d7b6415d0fcd5c0d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        const products = [
+            { id: 1, cat: "national", name_kg: "Ош ашы (Плов)", name_ru: "Ошский Плов", price: 250, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" },
+            { id: 2, cat: "national", name_kg: "Чоюлма Лагман", name_ru: "Тянутый Лагман", price: 220, img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c" },
+            { id: 3, cat: "drinks", name_kg: "Coca-Cola 1л", name_ru: "Coca-Cola 1л", price: 85, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97" }
+        ];
+
+        let cart = [];
+        let currentLang = 'kg';
+
+        window.changeLang = (l) => {
+            currentLang = l;
+            document.getElementById('lang-kg').classList.toggle('active', l === 'kg');
+            document.getElementById('lang-ru').classList.toggle('active', l === 'ru');
+            window.renderMenu();
+        };
+
+        window.renderMenu = (data = products) => {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = data.map(p => `
+                <div class="food-card" onclick="window.openProduct(${p.id})">
+                    <img src="${p.img}">
+                    <h3>${currentLang === 'kg' ? p.name_kg : p.name_ru}</h3>
+                    <span>${p.price} сом</span>
+                </div>
+            `).join('');
+        };
+
+        window.openProduct = (id) => {
+            const p = products.find(x => x.id === id);
+            document.getElementById('modalImg').src = p.img;
+            document.getElementById('modalName').innerText = currentLang === 'kg' ? p.name_kg : p.name_ru;
+            document.getElementById('addBtnAction').onclick = () => {
+                cart.push(p);
+                window.updateCartUI();
+                window.closeProduct();
+            };
+            document.getElementById('productModal').style.display = 'flex';
+        };
+
+        window.updateCartUI = () => {
+            const subtotal = cart.reduce((a, b) => a + b.price, 0);
+            document.getElementById('cartCount').innerText = cart.length;
+            document.getElementById('cartSum').innerText = subtotal;
+            document.getElementById('cartBar').style.display = cart.length > 0 ? 'flex' : 'none';
+        };
+
+        window.showCart = () => {
+            document.getElementById('cartModal').style.display = 'flex';
+            const list = document.getElementById('cartList');
+            list.innerHTML = cart.map((item, i) => `
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span>${item.name_kg}</span>
+                    <b>${item.price}с <button onclick="window.removeItem(${i})" style="color:red; border:none; background:none;">✕</button></b>
+                </div>
+            `).join('');
+            window.calculateTotal();
+        };
+
+        window.removeItem = (i) => {
+            cart.splice(i, 1);
+            window.updateCartUI();
+            window.showCart();
+            if(cart.length === 0) window.closeCart();
+        };
+
+        window.calculateTotal = () => {
+            const sub = cart.reduce((a, b) => a + b.price, 0);
+            const del = parseInt(document.getElementById('deliveryType').value);
+            document.getElementById('finalSum').innerText = sub + del;
+        };
+
+        window.toggleMbank = (v) => {
+            document.getElementById('mbankDetails').style.display = v === 'MBANK' ? 'block' : 'none';
+        };
+
+        window.checkout = async () => {
+            const name = document.getElementById('userName').value.trim();
+            const addr = document.getElementById('userAddress').value.trim();
+            const pay = document.getElementById('paymentMethod').value;
+            const final = document.getElementById('finalSum').innerText;
+
+            if(!name || !addr) return alert("Атыңызды жана дарегиңизди жазыңыз!");
+
+            const itemsText = cart.map(i => i.name_kg).join(", ");
+
+            try {
+                // Firebase'ге жазуу
+                const ordersRef = ref(database, 'orders');
+                await set(push(ordersRef), {
+                    customerName: name, address: addr, items: itemsText, totalPrice: final, paymentMethod: pay, time: new Date().toLocaleString()
+                });
+
+                // WhatsApp ачуу
+                const msg = `🚀 ЗАКАЗ\n👤 Аты: ${name}\n📍 Дарек: ${addr}\n🍴 Тамактар: ${itemsText}\n💰 Сумма: ${final} сом\n💳 Төлөм: ${pay}`;
+                window.open(`https://wa.me/996556616174?text=${encodeURIComponent(msg)}`);
+
+                cart = [];
+                window.updateCartUI();
+                window.closeCart();
+            } catch (e) { alert("Ката: " + e.message); }
+        };
+
+        window.closeProduct = () => document.getElementById('productModal').style.display = 'none';
+        window.closeCart = () => document.getElementById('cartModal').style.display = 'none';
+        window.copyNumber = () => { navigator.clipboard.writeText("0556616174"); alert("Номер көчүрүлдү!"); };
+        window.searchFood = () => {
+            const val = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => p.name_kg.toLowerCase().includes(val) || p.name_ru.toLowerCase().includes(val));
+            window.renderMenu(filtered);
+        };
+        window.filterMenu = (c, e) => {
+            document.querySelectorAll('.cat-item').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            window.renderMenu(c === 'all' ? products : products.filter(p => p.cat === c));
+        };
+
+        window.renderMenu();
     </script>
 </body>
 </html>
+
