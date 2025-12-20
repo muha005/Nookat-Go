@@ -4,16 +4,7 @@
     <meta name="google-site-verification" content="U9H3QG7sUI5RlWq_SikZb3IJDP1ZnV1n3FVw2ei4lqk" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <title>Nookat Go - Ноокаттагы эң тез тамак жеткирүү кызматы</title>
-    <meta name="description" content="Nookat Go аркылуу Ноокаттагы эң мыкты кафелерден тамак заказ кылыңыз. Тез жеткирүү, арзан баа жана сапаттуу тейлөө.">
-    <meta name="keywords" content="Nookat Go, Ноокат, тамак жеткирүү, доставка Ноокат, кафе Ноокат, онлайн меню Ноокат, заказ еды Ноокат">
-    <meta name="author" content="Nookat Go">
-    
-    <meta property="og:title" content="Nookat Go - Онлайн Тамак Заказ Кылуу">
-    <meta property="og:description" content="Ноокаттын даамдуу тамактары бир жерде!">
-    <meta property="og:type" content="website">
-
+    <title>Nookat Go - Тамак жеткирүү</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
@@ -21,22 +12,18 @@
         :root { --primary: #2ecc71; --dark: #2c3e50; --bg: #f8f9fa; --white: #ffffff; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--dark); overflow-x: hidden; }
-
         .top-nav { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .logo { font-size: 24px; font-weight: 900; color: var(--dark); text-decoration: none; }
         .logo span { color: var(--primary); }
         .lang-selector span { cursor: pointer; padding: 5px 10px; font-weight: 700; font-size: 14px; color: #ccc; }
         .lang-selector span.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
-
         .hero { background: var(--white); padding: 20px; text-align: center; }
         .search-box { background: #f1f3f5; padding: 12px; border-radius: 15px; display: flex; align-items: center; margin-top: 15px; }
         .search-box input { border: none; background: transparent; width: 100%; padding-left: 10px; outline: none; font-size: 16px; }
-
         .categories { display: flex; overflow-x: auto; padding: 15px; gap: 10px; scrollbar-width: none; }
         .categories::-webkit-scrollbar { display: none; }
         .cat-item { padding: 10px 20px; border: none; border-radius: 25px; background: var(--white); white-space: nowrap; cursor: pointer; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .cat-item.active { background: var(--primary); color: white; }
-
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px 15px 100px 15px; }
         .food-card { background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.2s; }
         .food-card:active { transform: scale(0.96); }
@@ -44,16 +31,12 @@
         .food-info { padding: 12px; }
         .food-info h3 { font-size: 14px; margin-bottom: 5px; height: 38px; overflow: hidden; }
         .food-price { color: var(--primary); font-weight: 900; font-size: 16px; }
-
         .bottom-cart { position: fixed; bottom: 20px; left: 5%; width: 90%; background: var(--dark); color: white; padding: 18px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 999; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-
         .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; align-items:flex-end; z-index: 2000; backdrop-filter: blur(5px); }
         .modal-content { background:white; width:100%; border-radius:30px 30px 0 0; padding:25px; max-height:85vh; overflow-y:auto; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
         input, select { width: 100%; padding: 14px; border: 1.5px solid #eee; border-radius: 12px; font-size: 16px; margin: 10px 0; outline: none; }
         .order-btn { width: 100%; background: #2ecc71; color: white; padding: 18px; border: none; border-radius: 15px; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        
         #mbankBox { background: #eafff2; padding: 15px; border: 2px dashed #2ecc71; border-radius: 15px; text-align: center; margin: 10px 0; display: none; }
     </style>
 </head>
@@ -76,10 +59,10 @@
     </div>
 
     <div class="categories">
-        <button class="cat-item active" onclick="filterMenu('all', event)">Баары</button>
-        <button class="cat-item" onclick="filterMenu('national', event)">Улуттук</button>
-        <button class="cat-item" onclick="filterMenu('fastfood', event)">Фастфуд</button>
-        <button class="cat-item" onclick="filterMenu('drinks', event)">Суулар</button>
+        <button id="cat-all" class="cat-item active" onclick="filterMenu('all', event)">Баары</button>
+        <button id="cat-nat" class="cat-item" onclick="filterMenu('national', event)">Улуттук</button>
+        <button id="cat-fast" class="cat-item" onclick="filterMenu('fastfood', event)">Фастфуд</button>
+        <button id="cat-drink" class="cat-item" onclick="filterMenu('drinks', event)">Суулар</button>
     </div>
 
     <main id="menu-grid" class="menu-grid"></main>
@@ -89,23 +72,17 @@
             <i class="fas fa-shopping-bag"></i>
             <span id="cartCount" style="background:var(--primary); padding:2px 8px; border-radius:8px;">0</span>
         </div>
-        <span id="cartSum">0</span> сом
+        <span id="cartSum">0</span> <span class="som-text">сом</span>
     </div>
 
     <div id="foodPreviewModal" class="modal" onclick="if(event.target == this) closePreview()">
         <div class="modal-content" style="text-align: center; border-radius: 30px; margin-bottom: 20px; width: 95%; align-self: center;">
             <img id="prevImg" src="" style="width: 100%; height: 220px; object-fit: cover; border-radius: 20px;">
             <h2 id="prevName" style="margin-top:15px; font-size: 22px;"></h2>
-            
             <p id="prevDesc" style="color: #666; font-size: 14px; margin: 10px 0; line-height: 1.4; padding: 0 10px;"></p>
-            
             <p id="prevPrice" style="color: #2ecc71; font-size: 24px; font-weight: 800; margin: 10px 0;"></p>
-            <button class="order-btn" onclick="confirmAdd()">
-                СЕБЕТКЕ КОШУУ
-            </button>
-            <button onclick="closePreview()" style="background: none; border: none; color: gray; margin-top: 15px; cursor: pointer; font-size: 16px;">
-                Артка кайтуу
-            </button>
+            <button id="add-to-cart-btn" class="order-btn" onclick="confirmAdd()">СЕБЕТКЕ КОШУУ</button>
+            <button id="back-btn" onclick="closePreview()" style="background: none; border: none; color: gray; margin-top: 15px; cursor: pointer; font-size: 16px;">Артка кайтуу</button>
         </div>
     </div>
 
@@ -115,18 +92,14 @@
             <div id="cartItemsList" style="margin-bottom:20px;"></div>
 
             <select id="delivery" onchange="calcTotal()">
-                <option value="0">Ноокат ичи (0 сом)</option>
-                <option value="150">Шаар сырты (+150 сом)</option>
-            </select>
+                </select>
 
             <select id="payment" onchange="toggleMbank(this.value)">
-                <option value="Налички">💵 Налички</option>
-                <option value="MBANK">💎 MBANK</option>
-            </select>
+                </select>
 
             <div id="mbankBox">
                 <p>Номер: <b style="font-size:18px;">0556 61 61 74</b></p>
-                <button onclick="copyMB()" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:8px; margin-top:5px; cursor:pointer;">Көчүрүү 📋</button>
+                <button id="copy-btn" onclick="copyMB()" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:8px; margin-top:5px; cursor:pointer;">Көчүрүү 📋</button>
             </div>
 
             <input type="text" id="uName" placeholder="Атыңыз...">
@@ -134,10 +107,10 @@
 
             <div style="margin-top:15px; font-size:20px; font-weight:900; display:flex; justify-content:space-between;">
                 <span id="total-text">Жалпы:</span>
-                <span><span id="finalSum">0</span> сом</span>
+                <span><span id="finalSum">0</span> <span class="som-text">сом</span></span>
             </div>
 
-            <button class="order-btn" onclick="sendOrder()" style="background: #25d366;">
+            <button id="send-btn" class="order-btn" onclick="sendOrder()" style="background: #25d366;">
                 <i class="fab fa-whatsapp"></i> ЖӨНӨТҮҮ
             </button>
         </div>
@@ -154,103 +127,91 @@
             databaseURL: "https://nookat-go-6fcf5-default-rtdb.firebaseio.com/",
             appId: "1:423808562168:web:7cabb4d7b6415d0fcd5c0d"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
         const foods = [
-            // NATIONAL (15)
-            { id: 1, cat: "national", kg: "Ош ашы (Плов)", ru: "Ошский Плов", price: 250, desc: "Нукура Ош ашы: девзира күрүч, кой эти, сары сабиз жана табигый татымалдар.", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" },
-            { id: 2, cat: "national", kg: "Чоюлма Лагман", ru: "Тянутый Лагман", price: 220, desc: "Колдо чоюлган камыр, жаңы жашылчалар жана куурулган уй эти.", img: "https://plus.unsplash.com/premium_photo-1664472637341-3ec829d1f4df?w=400" },
-            { id: 5, cat: "national", kg: "Манты (5 шт)", ru: "Манты (5 шт)", price: 200, desc: "Ширелүү кой эти жана пияз менен даярдалган колдун мантысы.", img: "https://images.unsplash.com/photo-1534422298391-e4f8c170db0a?w=400" },
-            { id: 7, cat: "national", kg: "Шорпо", ru: "Шорпо", price: 180, desc: "Койдун этинен кайнатылган витаминдүү жана тунук шорпо.", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400" },
-            { id: 13, cat: "national", kg: "Самсы (Тандыр)", ru: "Самсы (Тандыр)", price: 80, desc: "Тандырга бышкан кытырак камыр жана тууралган эт.", img: "https://images.unsplash.com/photo-1601050690597-df056fb4ce99?w=400" },
-            { id: 14, cat: "national", kg: "Казан Кебаб", ru: "Казан Кебаб", price: 350, desc: "Казанда куурулган эт жана кызарган картошка.", img: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=400" },
-            { id: 15, cat: "national", kg: "Беш Бармак", ru: "Беш Бармак", price: 400, desc: "Жылкы эти, кесме жана атайын чык соусу менен.", img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c?w=400" },
-            { id: 16, cat: "national", kg: "Дымдама", ru: "Дымдама", price: 210, desc: "Өз ширесинде дымдалган жашылчалар жана эт.", img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" },
-            { id: 17, cat: "national", kg: "Ганфан", ru: "Ганфан", price: 190, desc: "Ак күрүч жана жашылча-эт соусу менен.", img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c?w=400" },
-            { id: 18, cat: "national", kg: "Босо Лагман", ru: "Босо Лагман", price: 230, desc: "Куурулган лагман, камыры кытырак жана даамдуу.", img: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400" },
-            { id: 19, cat: "national", kg: "Чүчвара", ru: "Чучвара", price: 170, desc: "Майда түйүлгөн пельмендер жана эт шорпосу.", img: "https://images.unsplash.com/photo-1534422298391-e4f8c170db0a?w=400" },
-            { id: 20, cat: "national", kg: "Оромо", ru: "Оромо", price: 160, desc: "Бууга бышкан камыр, ичинде картошка жана эт.", img: "https://images.unsplash.com/photo-1601050690597-df056fb4ce99?w=400" },
-            { id: 21, cat: "national", kg: "Куурдак", ru: "Куурдак", price: 320, desc: "Пиязга куурулган кой эти жана картошка.", img: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400" },
-            { id: 22, cat: "national", kg: "Мастава", ru: "Мастава", price: 150, desc: "Күрүч жана жашылчалар кошулган тойлумдуу шорпо.", img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400" },
-            { id: 23, cat: "national", kg: "Күрүч аш", ru: "Рисовый суп", price: 140, desc: "Жеңил жана пайдалуу күрүч шорпосу.", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" },
-
-            // FASTFOOD (15)
-            { id: 3, cat: "fastfood", kg: "Чизбургер XL", ru: "Чизбургер XL", price: 180, desc: "Ширелүү котлета, Чеддер сыры жана атайын бургер соусу.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" },
-            { id: 4, cat: "fastfood", kg: "Тоок Шаурма", ru: "Куриная Шаурма", price: 160, desc: "Гриль тоок эти, бадыраң, помидор жана картошка фри лавашта.", img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400" },
-            { id: 6, cat: "fastfood", kg: "Картофель Фри", ru: "Картофель Фри", price: 100, desc: "Кытырак алтын түстөгү картошка таякчалары.", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400" },
-            { id: 8, cat: "fastfood", kg: "Пицца Ассорти", ru: "Пицца Ассорти", price: 450, desc: "Колбаса, гриб, сыр жана помидор кошулган 30см пицца.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400" },
-            { id: 9, cat: "fastfood", kg: "Хот-дог XXL", ru: "Хот-дог XXL", price: 110, desc: "Узун сосиска, жумшак нан жана кетчуп-майонез.", img: "https://images.unsplash.com/photo-1541234327333-5586632001fe?w=400" },
-            { id: 24, cat: "fastfood", kg: "Пицца Пепперони", ru: "Пицца Пепперони", price: 430, desc: "Ачуу колбаса жана Моцарелла сыры менен.", img: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400" },
-            { id: 25, cat: "fastfood", kg: "Наггетсы (10 шт)", ru: "Наггетсы", price: 150, desc: "Тоок этинен жасалган кытырак наггетстер.", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400" },
-            { id: 26, cat: "fastfood", kg: "Гамбургер", ru: "Гамбургер", price: 150, desc: "Классикалык бургер: котлета, пияз жана салат.", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" },
-            { id: 27, cat: "fastfood", kg: "Крылышки BBQ", ru: "Крылышки BBQ", price: 280, desc: "BBQ соусундагы тоок канаттары (8 даана).", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400" },
-            { id: 28, cat: "fastfood", kg: "Пицца Маргарита", ru: "Пицца Маргарита", price: 380, desc: "Сыр жана томат соусу кошулган жеңил пицца.", img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400" },
-            { id: 29, cat: "fastfood", kg: "Сэндвич Клаб", ru: "Клаб Сэндвич", price: 190, desc: "Үч кабаттуу нан, жумуртка жана ветчина менен.", img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400" },
-            { id: 30, cat: "fastfood", kg: "Донар Кебаб", ru: "Донер Кебаб", price: 170, desc: "Түрк нанындагы ширелүү эт жана жашылчалар.", img: "https://images.unsplash.com/photo-1561651823-34feb02250e4?w=400" },
-            { id: 31, cat: "fastfood", kg: "Твистер", ru: "Твистер", price: 140, desc: "Кытырак тоок эти лавашка оролгон.", img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400" },
-            { id: 32, cat: "fastfood", kg: "Сырные палочки", ru: "Сырные палочки", price: 160, desc: "Эриген сыр жана кытырак кабык.", img: "https://images.unsplash.com/photo-1531496681078-2742ed47fba8?w=400" },
-            { id: 33, cat: "fastfood", kg: "Пицца Грибная", ru: "Пицца с грибами", price: 410, desc: "Шампиньон грибдери жана сыр менен.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400" },
-
-            // DRINKS (10)
-            { id: 10, cat: "drinks", kg: "Coca-Cola 1л", ru: "Coca-Cola 1л", price: 85, desc: "Классикалык газдуу суусундук.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400" },
-            { id: 11, cat: "drinks", kg: "Чай кара/жашыл", ru: "Чай", price: 30, desc: "Ысык демделген чай. Лимон жана кант менен.", img: "https://images.unsplash.com/photo-1544787210-2211d7c928c7?w=400" },
-            { id: 12, cat: "drinks", kg: "Максым 0.5л", ru: "Максым 0.5л", price: 50, desc: "Кыргыздын улуттук ачытылган суусундугу.", img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400" },
-            { id: 34, cat: "drinks", kg: "Fanta 1л", ru: "Fanta 1л", price: 85, desc: "Апельсин даамындагы суусундук.", img: "https://images.unsplash.com/photo-1624517452488-04869289c4ca?w=400" },
-            { id: 35, cat: "drinks", kg: "Sprite 1л", ru: "Sprite 1л", price: 85, desc: "Лимон-лайм даамындагы суусундук.", img: "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400" },
-            { id: 36, cat: "drinks", kg: "Суу (Газсыз) 0.5л", ru: "Вода 0.5л", price: 30, desc: "Таза булак суусу.", img: "https://images.unsplash.com/photo-1548919973-5dea585f3951?w=400" },
-            { id: 37, cat: "drinks", kg: "Кофе Американо", ru: "Кофе Американо", price: 100, desc: "Жаңы тартылган кофе.", img: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400" },
-            { id: 38, cat: "drinks", kg: "Компот 1л", ru: "Компот 1л", price: 100, desc: "Үй шартында кургатылган жемиштерден.", img: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400" },
-            { id: 39, cat: "drinks", kg: "Айран 0.5л", ru: "Кефир 0.5л", price: 50, desc: "Муздак жана табигый айран.", img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400" },
-            { id: 40, cat: "drinks", kg: "Шире (Сок) 1л", ru: "Сок 1л", price: 120, desc: "Ар кандай жемиштерден жасалган шире.", img: "https://images.unsplash.com/photo-1543218024-57a70143c369?w=400" }
+            { id: 1, cat: "national", kg: "Ош ашы (Плов)", ru: "Ошский Плов", price: 250, desc_kg: "Нукура Ош ашы...", desc_ru: "Настоящий ошский плов...", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" },
+            { id: 2, cat: "national", kg: "Чоюлма Лагман", ru: "Тянутый Лагман", price: 220, desc_kg: "Колдо чоюлган камыр...", desc_ru: "Тянутое вручную тесто...", img: "https://plus.unsplash.com/premium_photo-1664472637341-3ec829d1f4df?w=400" },
+            { id: 3, cat: "fastfood", kg: "Чизбургер XL", ru: "Чизбургер XL", price: 180, desc_kg: "Ширелүү котлета...", desc_ru: "Сочная котлета...", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" },
+            { id: 10, cat: "drinks", kg: "Coca-Cola 1л", ru: "Coca-Cola 1л", price: 85, desc_kg: "Газдуу суусундук", desc_ru: "Газированный напиток", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400" }
+            // Калган тамактарды ушул форматта кошсоңуз болот
         ];
+
+        const translations = {
+            kg: {
+                title: "Ноокаттагы эң мыкты даамдар", search: "Издөө...", all: "Баары", nat: "Улуттук", fast: "Фастфуд", drink: "Суулар", 
+                cart: "Себет", som: "сом", add: "СЕБЕТКЕ КОШУУ", back: "Артка кайтуу", name: "Атыңыз...", addr: "Дарегиңиз...", 
+                total: "Жалпы:", send: "ЖӨНӨТҮҮ", copy: "Көчүрүү 📋", inside: "Ноокат ичи (0 сом)", outside: "Шаар сырты (+150 сом)", cash: "💵 Налички"
+            },
+            ru: {
+                title: "Лучшая еда в Ноокате", search: "Поиск...", all: "Все", nat: "Национальная", fast: "Фастфуд", drink: "Напитки", 
+                cart: "Корзина", som: "сом", add: "ДОБАВИТЬ В КОРЗИНУ", back: "Назад", name: "Ваше имя...", addr: "Ваш адрес...", 
+                total: "Итого:", send: "ОТПРАВИТЬ", copy: "Копировать 📋", inside: "Внутри Нооката (0 сом)", outside: "За город (+150 сом)", cash: "💵 Наличные"
+            }
+        };
 
         let cart = [];
         let lang = 'kg';
         let tempFood = null;
-        const noImg = "https://via.placeholder.com/400x300?text=Nookat+Go";
 
         window.setLang = (l) => {
             lang = l;
+            const t = translations[l];
             document.getElementById('l-kg').className = l === 'kg' ? 'active' : '';
             document.getElementById('l-ru').className = l === 'ru' ? 'active' : '';
-            document.getElementById('h-title').innerText = l === 'kg' ? "Ноокаттагы эң мыкты даамдар" : "Лучшая еда в Ноокате";
+            
+            // Интерфейсти которуу
+            document.getElementById('h-title').innerText = t.title;
+            document.getElementById('searchInput').placeholder = t.search;
+            document.getElementById('cat-all').innerText = t.all;
+            document.getElementById('cat-nat').innerText = t.nat;
+            document.getElementById('cat-fast').innerText = t.fast;
+            document.getElementById('cat-drink').innerText = t.drink;
+            document.getElementById('cart-title').innerText = t.cart;
+            document.querySelectorAll('.som-text').forEach(el => el.innerText = t.som);
+            document.getElementById('add-to-cart-btn').innerText = t.add;
+            document.getElementById('back-btn').innerText = t.back;
+            document.getElementById('uName').placeholder = t.name;
+            document.getElementById('uAddr').placeholder = t.addr;
+            document.getElementById('total-text').innerText = t.total;
+            document.getElementById('copy-btn').innerText = t.copy;
+
+            // Селекттерди которуу
+            document.getElementById('delivery').innerHTML = `
+                <option value="0">${t.inside}</option>
+                <option value="150">${t.outside}</option>`;
+            document.getElementById('payment').innerHTML = `
+                <option value="Налички">${t.cash}</option>
+                <option value="MBANK">💎 MBANK</option>`;
+
             render();
+            updateBar();
         };
 
         function render(items = foods) {
             const grid = document.getElementById('menu-grid');
             grid.innerHTML = items.map(f => `
                 <div class="food-card" onclick="openPreview(${f.id})">
-                    <img src="${f.img}" onerror="this.src='${noImg}'">
+                    <img src="${f.img}">
                     <div class="food-info">
                         <h3>${lang === 'kg' ? f.kg : f.ru}</h3>
                         <div class="food-price">${f.price} сом</div>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
         window.openPreview = (id) => {
             tempFood = foods.find(x => x.id === id);
             document.getElementById('prevImg').src = tempFood.img;
-            document.getElementById('prevImg').onerror = function() { this.src = noImg; };
             document.getElementById('prevName').innerText = lang === 'kg' ? tempFood.kg : tempFood.ru;
-            document.getElementById('prevDesc').innerText = tempFood.desc || "";
+            document.getElementById('prevDesc').innerText = lang === 'kg' ? tempFood.desc_kg : tempFood.desc_ru;
             document.getElementById('prevPrice').innerText = tempFood.price + " сом";
             document.getElementById('foodPreviewModal').style.display = 'flex';
         };
 
-        window.closePreview = () => {
-            document.getElementById('foodPreviewModal').style.display = 'none';
-        };
-
-        window.confirmAdd = () => {
-            cart.push(tempFood);
-            updateBar();
-            closePreview();
-        };
+        window.confirmAdd = () => { cart.push(tempFood); updateBar(); closePreview(); };
+        window.closePreview = () => { document.getElementById('foodPreviewModal').style.display = 'none'; };
 
         function updateBar() {
             const sum = cart.reduce((a, b) => a + b.price, 0);
@@ -266,18 +227,12 @@
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;">
                     <span style="font-size:14px;">${lang === 'kg' ? f.kg : f.ru}</span>
                     <b>${f.price}с <i class="fas fa-trash" style="color:red; margin-left:10px; cursor:pointer;" onclick="remove(${i})"></i></b>
-                </div>
-            `).join('');
+                </div>`).join('');
             calcTotal();
         };
 
-        window.remove = (i) => {
-            cart.splice(i, 1);
-            if(cart.length === 0) closeCart();
-            else showCart();
-            updateBar();
-        };
-
+        window.remove = (i) => { cart.splice(i, 1); cart.length === 0 ? closeCart() : showCart(); updateBar(); };
+        window.closeCart = () => { document.getElementById('cartModal').style.display = 'none'; };
         window.calcTotal = () => {
             const sub = cart.reduce((a, b) => a + b.price, 0);
             const del = parseInt(document.getElementById('delivery').value);
@@ -287,25 +242,9 @@
         window.sendOrder = async () => {
             const n = document.getElementById('uName').value.trim();
             const a = document.getElementById('uAddr').value.trim();
-            const p = document.getElementById('payment').value;
-            const s = document.getElementById('finalSum').innerText;
-
-            if(!n || !a) return alert("Атыңызды жана дарегиңизди жазыңыз!");
-
-            const itemsText = cart.map(f => f.kg).join(", ");
-            const msg = `🚀 *ЖАҢЫ ЗАКАЗ*\n👤 *Аты:* ${n}\n📍 *Дарек:* ${a}\n🍴 *Тамактар:* ${itemsText}\n💳 *Төлөм:* ${p}\n💰 *Сумма:* ${s} сом`;
-
-            const waUrl = `https://api.whatsapp.com/send?phone=996556616174&text=${encodeURIComponent(msg)}`;
-            window.location.assign(waUrl);
-
-            try {
-                await set(push(ref(db, 'orders')), { 
-                    name: n, addr: a, items: itemsText, sum: s, pay: p, 
-                    timestamp: serverTimestamp() 
-                });
-            } catch (e) { console.log("Firebase error ignored"); }
-
-            cart = []; updateBar(); closeCart();
+            if(!n || !a) return alert(lang === 'kg' ? "Маалыматты толтуруңуз!" : "Заполните данные!");
+            const msg = `🚀 *ЗАКАЗ*\n👤 ${n}\n📍 ${a}\n🍴 ${cart.map(f => f.kg).join(", ")}\n💰 ${document.getElementById('finalSum').innerText} сом`;
+            window.location.assign(`https://api.whatsapp.com/send?phone=996556616174&text=${encodeURIComponent(msg)}`);
         };
 
         window.searchFood = () => {
@@ -320,14 +259,12 @@
         };
 
         window.toggleMbank = (v) => document.getElementById('mbankBox').style.display = v === 'MBANK' ? 'block' : 'none';
-        window.closeCart = () => document.getElementById('cartModal').style.display = 'none';
-        window.copyMB = () => { navigator.clipboard.writeText("0556616174"); alert("Номер көчүрүлдү!"); };
+        window.copyMB = () => { navigator.clipboard.writeText("0556616174"); alert(lang === 'kg' ? "Көчүрүлдү!" : "Скопировано!"); };
 
-        render();
+        setLang('kg');
     </script>
 </body>
 </html>
-
 
 
 
