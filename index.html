@@ -13,25 +13,21 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--dark); overflow-x: hidden; }
 
-        /* Шапка */
         .top-nav { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .logo { font-size: 24px; font-weight: 900; color: var(--dark); text-decoration: none; }
         .logo span { color: var(--primary); }
         .lang-selector span { cursor: pointer; padding: 5px 10px; font-weight: 700; font-size: 14px; color: #ccc; }
         .lang-selector span.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
-        /* Издөө */
         .hero { background: var(--white); padding: 20px; text-align: center; }
         .search-box { background: #f1f3f5; padding: 12px; border-radius: 15px; display: flex; align-items: center; margin-top: 15px; }
         .search-box input { border: none; background: transparent; width: 100%; padding-left: 10px; outline: none; font-size: 16px; }
 
-        /* Категориялар */
         .categories { display: flex; overflow-x: auto; padding: 15px; gap: 10px; scrollbar-width: none; }
         .categories::-webkit-scrollbar { display: none; }
         .cat-item { padding: 10px 20px; border: none; border-radius: 25px; background: var(--white); white-space: nowrap; cursor: pointer; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .cat-item.active { background: var(--primary); color: white; }
 
-        /* Меню Торчосу */
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px 15px 100px 15px; }
         .food-card { background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.2s; }
         .food-card:active { transform: scale(0.96); }
@@ -40,10 +36,8 @@
         .food-info h3 { font-size: 14px; margin-bottom: 5px; height: 38px; overflow: hidden; }
         .food-price { color: var(--primary); font-weight: 900; font-size: 16px; }
 
-        /* Себет баскычы */
         .bottom-cart { position: fixed; bottom: 20px; left: 5%; width: 90%; background: var(--dark); color: white; padding: 18px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 999; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-        /* Модалдык терезе */
         .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; align-items:flex-end; z-index: 2000; backdrop-filter: blur(5px); }
         .modal-content { background:white; width:100%; border-radius:30px 30px 0 0; padding:25px; max-height:85vh; overflow-y:auto; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -87,6 +81,20 @@
             <span id="cartCount" style="background:var(--primary); padding:2px 8px; border-radius:8px;">0</span>
         </div>
         <span id="cartSum">0</span> сом
+    </div>
+
+    <div id="foodPreviewModal" class="modal" onclick="if(event.target == this) closePreview()">
+        <div class="modal-content" style="text-align: center; border-radius: 30px 30px 30px 30px; margin-bottom: 20px; width: 95%; align-self: center;">
+            <img id="prevImg" src="" style="width: 100%; height: 200px; object-fit: cover; border-radius: 20px;">
+            <h2 id="prevName" style="margin-top:15px; font-size: 22px;"></h2>
+            <p id="prevPrice" style="color: #2ecc71; font-size: 24px; font-weight: 800; margin: 10px 0;"></p>
+            <button class="order-btn" onclick="confirmAdd()" style="background: #2ecc71; width: 100%; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer;">
+                СЕБЕТКЕ КОШУУ
+            </button>
+            <button onclick="closePreview()" style="background: none; border: none; color: gray; margin-top: 15px; cursor: pointer; font-size: 16px;">
+                Артка кайтуу
+            </button>
+        </div>
     </div>
 
     <div id="cartModal" class="modal" onclick="if(event.target == this) closeCart()">
@@ -138,7 +146,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // 13 ТАМАК
         const foods = [
             { id: 1, cat: "national", kg: "Ош ашы (Плов)", ru: "Ошский Плов", price: 250, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" },
             { id: 2, cat: "national", kg: "Чоюлма Лагман", ru: "Тянутый Лагман", price: 220, img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c" },
@@ -157,6 +164,7 @@
 
         let cart = [];
         let lang = 'kg';
+        let tempFood = null;
 
         window.setLang = (l) => {
             lang = l;
@@ -169,7 +177,7 @@
         function render(items = foods) {
             const grid = document.getElementById('menu-grid');
             grid.innerHTML = items.map(f => `
-                <div class="food-card" onclick="add(${f.id})">
+                <div class="food-card" onclick="openPreview(${f.id})">
                     <img src="${f.img}">
                     <div class="food-info">
                         <h3>${lang === 'kg' ? f.kg : f.ru}</h3>
@@ -179,10 +187,24 @@
             `).join('');
         }
 
-        window.add = (id) => {
-            const f = foods.find(x => x.id === id);
-            cart.push(f);
+        // ПРЕВЬЮ АЧУУ
+        window.openPreview = (id) => {
+            tempFood = foods.find(x => x.id === id);
+            document.getElementById('prevImg').src = tempFood.img;
+            document.getElementById('prevName').innerText = lang === 'kg' ? tempFood.kg : tempFood.ru;
+            document.getElementById('prevPrice').innerText = tempFood.price + " сом";
+            document.getElementById('foodPreviewModal').style.display = 'flex';
+        };
+
+        window.closePreview = () => {
+            document.getElementById('foodPreviewModal').style.display = 'none';
+        };
+
+        // ТАСТЫКТОО ЖАНА СЕБЕТКЕ КОШУУ
+        window.confirmAdd = () => {
+            cart.push(tempFood);
             updateBar();
+            closePreview();
         };
 
         function updateBar() {
@@ -198,7 +220,7 @@
             list.innerHTML = cart.map((f, i) => `
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;">
                     <span style="font-size:14px;">${lang === 'kg' ? f.kg : f.ru}</span>
-                    <b>${f.price}с <i class="fas fa-trash" style="color:red; margin-left:10px;" onclick="remove(${i})"></i></b>
+                    <b>${f.price}с <i class="fas fa-trash" style="color:red; margin-left:10px; cursor:pointer;" onclick="remove(${i})"></i></b>
                 </div>
             `).join('');
             calcTotal();
@@ -228,11 +250,9 @@
             const itemsText = cart.map(f => f.kg).join(", ");
             const msg = `🚀 *ЖАҢЫ ЗАКАЗ*\n👤 *Аты:* ${n}\n📍 *Дарек:* ${a}\n🍴 *Тамактар:* ${itemsText}\n💳 *Төлөм:* ${p}\n💰 *Сумма:* ${s} сом`;
 
-            // WhatsApp багыттоо (Телефон үчүн эң ишенимдүү жолу)
             const waUrl = `https://api.whatsapp.com/send?phone=996556616174&text=${encodeURIComponent(msg)}`;
             window.location.assign(waUrl);
 
-            // Базага сактоо (фондо)
             try {
                 await set(push(ref(db, 'orders')), { 
                     name: n, addr: a, items: itemsText, sum: s, pay: p, 
@@ -257,24 +277,12 @@
         window.toggleMbank = (v) => document.getElementById('mbankBox').style.display = v === 'MBANK' ? 'block' : 'none';
         window.closeCart = () => document.getElementById('cartModal').style.display = 'none';
         window.copyMB = () => { navigator.clipboard.writeText("0556616174"); alert("Номер көчүрүлдү!"); };
-        <div id="foodPreviewModal" class="modal" onclick="if(event.target == this) closePreview()">
-    <div class="modal-content" style="text-align: center; max-width: 400px; margin: auto;">
-        <img id="prevImg" src="" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px;">
-        <h2 id="prevName" style="margin-top:15px; font-size: 22px;"></h2>
-        <p id="prevPrice" style="color: #2ecc71; font-size: 24px; font-weight: 800; margin: 10px 0;"></p>
-        <button class="order-btn" onclick="confirmAdd()" style="background: #2ecc71; width: 100%; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer;">
-            СЕБЕТКЕ КОШУУ
-        </button>
-        <button onclick="closePreview()" style="background: none; border: none; color: gray; margin-top: 15px; cursor: pointer; font-size: 16px;">
-            Артка кайтуу
-        </button>
-    </div>
-</div>
 
         render();
     </script>
 </body>
 </html>
+
 
 
 
