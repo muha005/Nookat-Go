@@ -5,24 +5,29 @@ window.sendOrder = async () => {
     const s = document.getElementById('finalSum').innerText;
 
     if (!n || !a) {
-        alert(lang === 'kg' ? "Сураныч, атыңызды жана дарегиңизди жазыңыз!" : "Пожалуйста, введите имя и адрес!");
+        alert(lang === 'kg' ? "Атыңызды жана дарегиңизди жазыңыз!" : "Введите имя и адрес!");
         return;
     }
 
     const itemsText = cart.map(f => `${lang === 'kg' ? f.kg : f.ru}`).join(", ");
     
-    // WhatsApp тексти
-    const msg = `🚀 *ЖАҢЫ ЗАКАЗ (Nookat Go)*\n\n` +
+    // WhatsApp билдирүүсүнүн тексти
+    const msg = `🚀 *ЖАҢЫ ЗАКАЗ: NOOKAT GO*\n\n` +
                 `👤 *Кардар:* ${n}\n` +
                 `📍 *Дарек:* ${a}\n` +
                 `🍴 *Тамактар:* ${itemsText}\n` +
                 `💳 *Төлөм:* ${p}\n` +
                 `💰 *Жалпы:* ${s} сом`;
 
+    const waUrl = `https://api.whatsapp.com/send?phone=996556616174&text=${encodeURIComponent(msg)}`;
+
+    // 1. Адегенде WhatsApp'ты ачуу (Телефондо бул эң маанилүү)
+    window.location.assign(waUrl);
+
+    // 2. Андан кийин базага жазуу (фондо иштей берет)
     try {
-        // 1. Firebase'ге жазуу (күтөбүз)
         const ordersRef = ref(db, 'orders');
-        await set(push(ordersRef), {
+        push(ordersRef, {
             customerName: n,
             address: a,
             items: itemsText,
@@ -30,22 +35,13 @@ window.sendOrder = async () => {
             paymentMethod: p,
             timestamp: serverTimestamp()
         });
-
-        // 2. Телефондор үчүн ЭҢ ИШЕНИМДҮҮ WhatsApp шилтемеси
-        const waUrl = `https://api.whatsapp.com/send?phone=996556616174&text=${encodeURIComponent(msg)}`;
         
         // Себетти тазалоо
         cart = [];
         updateBar();
         window.closeCart();
-
-        // 3. Түз багыттоо (Телефондо 100% иштейт)
-        window.location.assign(waUrl);
-
     } catch (error) {
-        console.error("Ката кетти:", error);
-        // Эгер база иштебей калса да, WhatsApp ачыла бериши үчүн:
-        const waUrlFallback = `https://api.whatsapp.com/send?phone=996556616174&text=${encodeURIComponent(msg)}`;
-        window.location.assign(waUrlFallback);
+        console.log("Firebase жазууда ката чыкты, бирок заказ кетти.");
     }
 };
+
