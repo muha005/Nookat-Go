@@ -4,50 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nookat Go - Тамак жеткирүү</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #2ecc71; --dark: #2c3e50; --gray: #f8f9fa; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--gray); color: var(--dark); }
 
-        /* Навигация */
-        .top-nav { background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .logo { font-size: 22px; font-weight: 900; color: var(--dark); text-decoration: none; }
+    <style>
+        :root { --primary: #2ecc71; --dark: #2c3e50; --bg: #f8f9fa; --white: #ffffff; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--dark); overflow-x: hidden; }
+
+        /* Шапка */
+        .top-nav { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { font-size: 24px; font-weight: 900; color: var(--dark); text-decoration: none; }
         .logo span { color: var(--primary); }
-        .lang-selector span { cursor: pointer; padding: 5px 10px; font-weight: bold; font-size: 14px; }
+        .lang-selector span { cursor: pointer; padding: 5px 10px; font-weight: 700; font-size: 14px; color: #ccc; }
         .lang-selector span.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
-        /* Издөө жана Категория */
-        .hero { background: white; padding: 20px; text-align: center; }
-        .search-box { background: #eee; padding: 12px; border-radius: 12px; display: flex; align-items: center; margin-top: 15px; }
+        /* Издөө */
+        .hero { background: var(--white); padding: 20px; text-align: center; }
+        .search-box { background: #f1f3f5; padding: 12px; border-radius: 15px; display: flex; align-items: center; margin-top: 15px; }
         .search-box input { border: none; background: transparent; width: 100%; padding-left: 10px; outline: none; font-size: 16px; }
+
+        /* Категориялар */
         .categories { display: flex; overflow-x: auto; padding: 15px; gap: 10px; scrollbar-width: none; }
-        .cat-item { padding: 10px 20px; border: none; border-radius: 25px; background: white; white-space: nowrap; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s; }
+        .categories::-webkit-scrollbar { display: none; }
+        .cat-item { padding: 10px 20px; border: none; border-radius: 25px; background: var(--white); white-space: nowrap; cursor: pointer; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .cat-item.active { background: var(--primary); color: white; }
 
-        /* Меню */
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
-        .food-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+        /* Меню Торчосу */
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px 15px 100px 15px; }
+        .food-card { background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.2s; }
+        .food-card:active { transform: scale(0.96); }
         .food-card img { width: 100%; height: 130px; object-fit: cover; }
-        .food-info { padding: 10px; }
-        .food-info h3 { font-size: 14px; margin-bottom: 5px; height: 35px; overflow: hidden; }
+        .food-info { padding: 12px; }
+        .food-info h3 { font-size: 14px; margin-bottom: 5px; height: 38px; overflow: hidden; }
         .food-price { color: var(--primary); font-weight: 900; font-size: 16px; }
 
         /* Себет баскычы */
-        .bottom-cart { position: fixed; bottom: 20px; left: 5%; width: 90%; background: var(--dark); color: white; padding: 18px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 999; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+        .bottom-cart { position: fixed; bottom: 20px; left: 5%; width: 90%; background: var(--dark); color: white; padding: 18px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 999; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-        /* Модалдар */
-        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; align-items:flex-end; z-index: 2000; }
-        .modal-content { background:white; width:100%; border-radius:30px 30px 0 0; padding:25px; max-height:85vh; overflow-y:auto; }
+        /* Модалдык терезе */
+        .modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; align-items:flex-end; z-index: 2000; backdrop-filter: blur(5px); }
+        .modal-content { background:white; width:100%; border-radius:30px 30px 0 0; padding:25px; max-height:85vh; overflow-y:auto; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        input, select { width: 100%; padding: 14px; border: 1.5px solid #eee; border-radius: 12px; font-size: 16px; margin: 10px 0; outline: none; }
+        .order-btn { width: 100%; background: #25d366; color: white; padding: 18px; border: none; border-radius: 15px; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 10px; }
         
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; outline: none; }
-        
-        .order-btn { width: 100%; background: #25d366; color: white; padding: 18px; border: none; border-radius: 15px; font-size: 18px; font-weight: 900; cursor: pointer; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        
-        #mbankBox { background: #f0fff0; padding: 15px; border: 2px dashed #2ecc71; border-radius: 10px; text-align: center; margin: 10px 0; display: none; }
+        #mbankBox { background: #eafff2; padding: 15px; border: 2px dashed #2ecc71; border-radius: 15px; text-align: center; margin: 10px 0; display: none; }
     </style>
 </head>
 <body>
@@ -64,7 +68,7 @@
         <h1 id="h-title">Ноокаттагы эң мыкты даамдар</h1>
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" oninput="searchFood()" placeholder="Тамак же кафе издөө...">
+            <input type="text" id="searchInput" oninput="searchFood()" placeholder="Издөө...">
         </div>
     </div>
 
@@ -78,57 +82,50 @@
     <main id="menu-grid" class="menu-grid"></main>
 
     <div id="cartBar" class="bottom-cart" onclick="showCart()" style="display:none;">
-        <div style="display:flex; align-items:center; gap:10px;">
+        <div style="display:flex; align-items:center; gap:8px;">
             <i class="fas fa-shopping-bag"></i>
-            <span id="cartCount">0</span>
+            <span id="cartCount" style="background:var(--primary); padding:2px 8px; border-radius:8px;">0</span>
         </div>
-        <span style="font-weight:900;">СЕБЕТТИН СУММАСЫ</span>
         <span id="cartSum">0</span> сом
     </div>
 
     <div id="cartModal" class="modal" onclick="if(event.target == this) closeCart()">
         <div class="modal-content">
-            <h2 style="margin-bottom:20px;">Сиздин заказыңыз</h2>
+            <h2 id="cart-title" style="margin-bottom:15px;">Себет</h2>
             <div id="cartItemsList" style="margin-bottom:20px;"></div>
 
-            <div class="input-group">
-                <label>Жеткирүү аймагы:</label>
-                <select id="delivery" onchange="calcTotal()">
-                    <option value="0">Ноокат ичи (0 сом)</option>
-                    <option value="150">Шаар сырты (+150 сом)</option>
-                </select>
-            </div>
+            <select id="delivery" onchange="calcTotal()">
+                <option value="0">Ноокат ичи (0 сом)</option>
+                <option value="150">Шаар сырты (+150 сом)</option>
+            </select>
 
-            <div class="input-group">
-                <label>Төлөм ыкмасы:</label>
-                <select id="payment" onchange="toggleMbank(this.value)">
-                    <option value="Налички">💵 Налички</option>
-                    <option value="MBANK">💎 MBANK</option>
-                </select>
-            </div>
+            <select id="payment" onchange="toggleMbank(this.value)">
+                <option value="Налички">💵 Налички</option>
+                <option value="MBANK">💎 MBANK</option>
+            </select>
 
             <div id="mbankBox">
                 <p>Номер: <b style="font-size:18px;">0556 61 61 74</b></p>
-                <button onclick="copyMB()" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:5px; margin-top:5px; cursor:pointer;">Көчүрүү 📋</button>
+                <button onclick="copyMB()" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:8px; margin-top:5px; cursor:pointer;">Көчүрүү 📋</button>
             </div>
 
-            <input type="text" id="uName" placeholder="Атыңыз..." style="margin-bottom:10px;">
-            <input type="text" id="uAddr" placeholder="Дарегиңиз (мис: Ленин 15)...">
+            <input type="text" id="uName" placeholder="Атыңыз...">
+            <input type="text" id="uAddr" placeholder="Дарегиңиз...">
 
-            <div style="margin-top:20px; font-size:20px; font-weight:900; display:flex; justify-content:space-between;">
-                <span>Жалпы сумма:</span>
+            <div style="margin-top:15px; font-size:20px; font-weight:900; display:flex; justify-content:space-between;">
+                <span id="total-text">Жалпы:</span>
                 <span><span id="finalSum">0</span> сом</span>
             </div>
 
             <button class="order-btn" onclick="sendOrder()">
-                <i class="fab fa-whatsapp"></i> ЗАКАЗДЫ ЖӨНӨТҮҮ
+                <i class="fab fa-whatsapp"></i> ЖӨНӨТҮҮ
             </button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+        import { getDatabase, ref, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCjsFILpJUY9K1gyJx-f8-9BkFu7T3-g-A",
@@ -141,6 +138,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // 13 ТАМАК
         const foods = [
             { id: 1, cat: "national", kg: "Ош ашы (Плов)", ru: "Ошский Плов", price: 250, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" },
             { id: 2, cat: "national", kg: "Чоюлма Лагман", ru: "Тянутый Лагман", price: 220, img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c" },
@@ -148,8 +146,13 @@
             { id: 4, cat: "fastfood", kg: "Тоок Шаурма", ru: "Куриная Шаурма", price: 160, img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783" },
             { id: 5, cat: "national", kg: "Манты (5 шт)", ru: "Манты (5 шт)", price: 200, img: "https://images.unsplash.com/photo-1534422298391-e4f8c170db0a" },
             { id: 6, cat: "fastfood", kg: "Картофель Фри", ru: "Картофель Фри", price: 100, img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877" },
-            { id: 7, cat: "drinks", kg: "Coca-Cola 1л", ru: "Coca-Cola 1л", price: 85, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97" },
-            { id: 8, cat: "drinks", kg: "Чай кара/жашыл", ru: "Чай черный/зеленый", price: 30, img: "https://images.unsplash.com/photo-1544787210-2211d7c928c7" }
+            { id: 7, cat: "national", kg: "Шорпо", ru: "Шорпо", price: 180, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd" },
+            { id: 8, cat: "fastfood", kg: "Пицца Ассорти", ru: "Пицца Ассорти", price: 450, img: "https://images.unsplash.com/photo-1513104890138-7c749659a591" },
+            { id: 9, cat: "fastfood", kg: "Хот-дог", ru: "Хот-дог", price: 90, img: "https://images.unsplash.com/photo-1541234327333-5586632001fe" },
+            { id: 10, cat: "drinks", kg: "Coca-Cola 1л", ru: "Coca-Cola 1л", price: 85, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97" },
+            { id: 11, cat: "drinks", kg: "Чай кара/жашыл", ru: "Чай", price: 30, img: "https://images.unsplash.com/photo-1544787210-2211d7c928c7" },
+            { id: 12, cat: "drinks", kg: "Максым 0.5л", ru: "Максым 0.5л", price: 50, img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd" },
+            { id: 13, cat: "national", kg: "Самсы (Тандыр)", ru: "Самсы (Тандыр)", price: 80, img: "https://images.unsplash.com/photo-1601050690597-df056fb4ce99" }
         ];
 
         let cart = [];
@@ -194,7 +197,7 @@
             const list = document.getElementById('cartItemsList');
             list.innerHTML = cart.map((f, i) => `
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;">
-                    <span>${f.kg}</span>
+                    <span style="font-size:14px;">${lang === 'kg' ? f.kg : f.ru}</span>
                     <b>${f.price}с <i class="fas fa-trash" style="color:red; margin-left:10px;" onclick="remove(${i})"></i></b>
                 </div>
             `).join('');
@@ -214,14 +217,35 @@
             document.getElementById('finalSum').innerText = sub + del;
         };
 
-        window.toggleMbank = (v) => document.getElementById('mbankBox').style.display = v === 'MBANK' ? 'block' : 'none';
-        window.closeCart = () => document.getElementById('cartModal').style.display = 'none';
-        window.copyMB = () => { navigator.clipboard.writeText("0556616174"); alert("Көчүрүлдү!"); };
-        
+        window.sendOrder = async () => {
+            const n = document.getElementById('uName').value.trim();
+            const a = document.getElementById('uAddr').value.trim();
+            const p = document.getElementById('payment').value;
+            const s = document.getElementById('finalSum').innerText;
+
+            if(!n || !a) return alert("Атыңызды жана дарегиңизди жазыңыз!");
+
+            const itemsText = cart.map(f => f.kg).join(", ");
+            const msg = `🚀 *ЖАҢЫ ЗАКАЗ*\n👤 *Аты:* ${n}\n📍 *Дарек:* ${a}\n🍴 *Тамактар:* ${itemsText}\n💳 *Төлөм:* ${p}\n💰 *Сумма:* ${s} сом`;
+
+            // WhatsApp багыттоо (Телефон үчүн эң ишенимдүү жолу)
+            const waUrl = `https://api.whatsapp.com/send?phone=996556616174&text=${encodeURIComponent(msg)}`;
+            window.location.assign(waUrl);
+
+            // Базага сактоо (фондо)
+            try {
+                await set(push(ref(db, 'orders')), { 
+                    name: n, addr: a, items: itemsText, sum: s, pay: p, 
+                    timestamp: serverTimestamp() 
+                });
+            } catch (e) { console.log("Firebase error ignored"); }
+
+            cart = []; updateBar(); closeCart();
+        };
+
         window.searchFood = () => {
             const q = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = foods.filter(f => f.kg.toLowerCase().includes(q) || f.ru.toLowerCase().includes(q));
-            render(filtered);
+            render(foods.filter(f => f.kg.toLowerCase().includes(q) || f.ru.toLowerCase().includes(q)));
         };
 
         window.filterMenu = (c, e) => {
@@ -230,56 +254,9 @@
             render(c === 'all' ? foods : foods.filter(f => f.cat === c));
         };
 
-       window.sendOrder = async () => {
-    const n = document.getElementById('uName').value.trim();
-    const a = document.getElementById('uAddr').value.trim();
-    const p = document.getElementById('payment').value;
-    const s = document.getElementById('finalSum').innerText;
-
-    if (!n || !a) return alert("Введите имя и адрес");
-    if (cart.length === 0) return alert("Корзина пуста");
-
-    const itemsText = cart
-        .map((f, i) => ${i + 1}. ${lang === 'kg' ? f.kg : f.ru} – ${f.price} сом)
-        .join('\n');
-
-    const message =
-`NEW ORDER (Nookat Go)
-
-Name: ${n}
-Address: ${a}
-
-Items:
-${itemsText}
-
-Payment: ${p}
-Total: ${s} сом`;
-
-    const phone = "996556616174";
-    const waUrl = https://wa.me/${556616174}?text=${encodeURIComponent(message)};
-    window.open(waUrl, "_blank");
-
-    try {
-        await set(push(ref(db, 'orders')), {
-            name: n,
-            address: a,
-            items: cart.map(f => ({
-                kg: f.kg,
-                ru: f.ru,
-                price: f.price
-            })),
-            total: s,
-            payment: p,
-            createdAt: new Date().toISOString()
-        });
-    } catch (e) {
-        console.error(e);
-    }
-
-    cart = [];
-    updateBar();
-    closeCart();
-};
+        window.toggleMbank = (v) => document.getElementById('mbankBox').style.display = v === 'MBANK' ? 'block' : 'none';
+        window.closeCart = () => document.getElementById('cartModal').style.display = 'none';
+        window.copyMB = () => { navigator.clipboard.writeText("0556616174"); alert("Номер көчүрүлдү!"); };
 
         render();
     </script>
