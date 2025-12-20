@@ -257,11 +257,25 @@
         window.toggleMbank = (v) => document.getElementById('mbankBox').style.display = v === 'MBANK' ? 'block' : 'none';
         window.closeCart = () => document.getElementById('cartModal').style.display = 'none';
         window.copyMB = () => { navigator.clipboard.writeText("0556616174"); alert("Номер көчүрүлдү!"); };
+        <div id="foodPreviewModal" class="modal" onclick="if(event.target == this) closePreview()">
+    <div class="modal-content" style="text-align: center; max-width: 400px; margin: auto;">
+        <img id="prevImg" src="" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px;">
+        <h2 id="prevName" style="margin-top:15px; font-size: 22px;"></h2>
+        <p id="prevPrice" style="color: #2ecc71; font-size: 24px; font-weight: 800; margin: 10px 0;"></p>
+        <button class="order-btn" onclick="confirmAdd()" style="background: #2ecc71; width: 100%; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer;">
+            СЕБЕТКЕ КОШУУ
+        </button>
+        <button onclick="closePreview()" style="background: none; border: none; color: gray; margin-top: 15px; cursor: pointer; font-size: 16px;">
+            Артка кайтуу
+        </button>
+    </div>
+</div>
 
         render();
     </script>
 </body>
 </html>
+
 
 
 
