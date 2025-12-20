@@ -1,189 +1,181 @@
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-    import { getDatabase, ref, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+import { getDatabase, ref, push, set, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
-    // 1. Firebase конфигурациясы
-    const firebaseConfig = {
-        apiKey: "AIzaSyCjsFILpJUY9K1gyJx-f8-9BkFu7T3-g-A",
-        authDomain: "nookat-go-6fcf5.firebaseapp.com",
-        projectId: "nookat-go-6fcf5",
-        databaseURL: "https://nookat-go-6fcf5-default-rtdb.firebaseio.com/",
-        appId: "1:423808562168:web:7cabb4d7b6415d0fcd5c0d"
-    };
+// 1. Firebase Конфигурациясы
+const firebaseConfig = {
+    apiKey: "AIzaSyCjsFILpJUY9K1gyJx-f8-9BkFu7T3-g-A",
+    authDomain: "nookat-go-6fcf5.firebaseapp.com",
+    projectId: "nookat-go-6fcf5",
+    databaseURL: "https://nookat-go-6fcf5-default-rtdb.firebaseio.com/",
+    appId: "1:423808562168:web:7cabb4d7b6415d0fcd5c0d"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    // 2. Маалыматтар базасы (Меню)
-    const products = [
-        { id: 1, cat: "national", cafe: "Ордо", name_kg: "Ош ашы (Плов)", name_ru: "Ошский Плов", price: 250, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" },
-        { id: 2, cat: "national", cafe: "Алай", name_kg: "Чоюлма Лагман", name_ru: "Тянутый Лагман", price: 220, img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c" },
-        { id: 3, cat: "fastfood", cafe: "Burger House", name_kg: "Чизбургер", name_ru: "Чизбургер", price: 180, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd" },
-        { id: 4, cat: "fastfood", cafe: "Burger House", name_kg: "Шаурма (Тоок)", name_ru: "Шаурма (Куриная)", price: 160, img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783" },
-        { id: 5, cat: "pizza", cafe: "Dodo", name_kg: "Пицца Маргарита", name_ru: "Пицца Маргарита", price: 450, img: "https://images.unsplash.com/photo-1574071318508-1cdbad80ad50" },
-        { id: 6, cat: "pizza", cafe: "Dodo", name_kg: "Пицца Ассорти", name_ru: "Пицца Ассорти", price: 550, img: "https://images.unsplash.com/photo-1513104890138-7c749659a591" },
-        { id: 7, cat: "drinks", cafe: "Маркет", name_kg: "Coca-Cola 1л", name_ru: "Coca-Cola 1л", price: 85, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97" },
-        { id: 8, cat: "drinks", cafe: "Маркет", name_kg: "Чай", name_ru: "Чай", price: 30, img: "https://images.unsplash.com/photo-1544787210-2211d7c928c7" }
-    ];
+// 2. Тамактар базасы (8 даам)
+const foods = [
+    { id: 1, cat: "national", kg: "Ош ашы (Плов)", ru: "Ошский Плов", price: 250, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" },
+    { id: 2, cat: "national", kg: "Чоюлма Лагман", ru: "Тянутый Лагман", price: 220, img: "https://images.unsplash.com/photo-1512058560366-cd2427ff542c" },
+    { id: 3, cat: "fastfood", kg: "Чизбургер XL", ru: "Чизбургер XL", price: 180, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd" },
+    { id: 4, cat: "fastfood", kg: "Тоок Шаурма", ru: "Куриная Шаурма", price: 160, img: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783" },
+    { id: 5, cat: "national", kg: "Манты (5 шт)", ru: "Манты (5 шт)", price: 200, img: "https://images.unsplash.com/photo-1534422298391-e4f8c170db0a" },
+    { id: 6, cat: "fastfood", kg: "Картофель Фри", ru: "Картофель Фри", price: 100, img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877" },
+    { id: 7, cat: "drinks", kg: "Coca-Cola 1л", ru: "Coca-Cola 1л", price: 85, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97" },
+    { id: 8, cat: "drinks", kg: "Чай (Кара/Жашыл)", ru: "Чай (Черный/Зеленый)", price: 30, img: "https://images.unsplash.com/photo-1544787210-2211d7c928c7" }
+];
 
-    let cart = [];
-    let currentLang = 'kg';
+let cart = [];
+let lang = 'kg';
 
-    // 3. Тил которуу функциясы
-    window.changeLang = (l) => {
-        currentLang = l;
-        document.getElementById('lang-kg').classList.toggle('active', l === 'kg');
-        document.getElementById('lang-ru').classList.toggle('active', l === 'ru');
-        document.getElementById('hero-title').innerText = l === 'kg' ? "Ноокаттагы эң мыкты даамдар" : "Лучшая еда в Ноокате";
-        document.getElementById('cartText').innerText = l === 'kg' ? "СЕБЕТ" : "КОРЗИНА";
-        window.renderMenu();
-    };
-
-    // 4. Менюну экранга чыгаруу
-    window.renderMenu = (data = products) => {
-        const grid = document.getElementById('menu-grid');
-        grid.innerHTML = data.map(p => `
-            <div class="food-card" onclick="window.openProduct(${p.id})">
-                <img src="${p.img}">
-                <div class="card-info">
-                    <h3>${currentLang === 'kg' ? p.name_kg : p.name_ru}</h3>
-                    <p style="font-size: 12px; color: #777;">${p.cafe}</p>
-                    <span class="card-price">${p.price} сом</span>
-                </div>
+// 3. Менюну чыгаруу функциясы
+window.render = (items = foods) => {
+    const grid = document.getElementById('menu-grid');
+    if (!grid) return;
+    grid.innerHTML = items.map(f => `
+        <div class="food-card" onclick="add(${f.id})">
+            <img src="${f.img}" alt="${f.kg}">
+            <div class="food-info">
+                <h3>${lang === 'kg' ? f.kg : f.ru}</h3>
+                <div class="food-price">${f.price} сом</div>
             </div>
-        `).join('');
-    };
+        </div>
+    `).join('');
+};
 
-    // 5. Продуктту ачуу (Модал)
-    window.openProduct = (id) => {
-        const p = products.find(x => x.id === id);
-        document.getElementById('modalImg').src = p.img;
-        document.getElementById('modalName').innerText = currentLang === 'kg' ? p.name_kg : p.name_ru;
-        const btn = document.getElementById('addBtnAction');
-        btn.innerText = currentLang === 'kg' ? `Кошуу - ${p.price}с` : `Добавить - ${p.price}с`;
-        btn.onclick = () => {
-            cart.push(p);
-            window.updateCartUI();
-            window.closeProduct();
-        };
-        document.getElementById('productModal').style.display = 'flex';
-    };
+// 4. Себетке кошуу
+window.add = (id) => {
+    const f = foods.find(x => x.id === id);
+    if (f) {
+        cart.push({...f, cartId: Date.now()});
+        updateBar();
+    }
+};
 
-    // 6. Себеттин UI жаңылоо
-    window.updateCartUI = () => {
-        const subtotal = cart.reduce((a, b) => a + b.price, 0);
+// 5. Себеттин баскычын жаңылоо
+function updateBar() {
+    const sum = cart.reduce((a, b) => a + b.price, 0);
+    const bar = document.getElementById('cartBar');
+    if (bar) {
+        bar.style.display = cart.length > 0 ? 'flex' : 'none';
         document.getElementById('cartCount').innerText = cart.length;
-        document.getElementById('cartSum').innerText = subtotal;
-        document.getElementById('cartBar').style.display = cart.length > 0 ? 'flex' : 'none';
-    };
+        document.getElementById('cartSum').innerText = sum;
+    }
+}
 
-    // 7. Себетти ачуу
-    window.showCart = () => {
-        document.getElementById('cartModal').style.display = 'flex';
-        const list = document.getElementById('cartList');
-        list.innerHTML = cart.map((item, i) => `
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #eee;">
-                <span style="font-size:14px;">${currentLang === 'kg' ? item.name_kg : item.name_ru}</span>
-                <b>${item.price}с <button onclick="window.removeItem(${i})" style="color:red; border:none; background:none; font-size:18px; margin-left:10px; cursor:pointer;">✕</button></b>
-            </div>
-        `).join('');
-        window.calculateTotal();
-    };
+// 6. Себетти ачуу (Модал)
+window.showCart = () => {
+    document.getElementById('cartModal').style.display = 'flex';
+    const list = document.getElementById('cartItemsList');
+    list.innerHTML = cart.map((f, i) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;">
+            <span style="font-size:14px;">${lang === 'kg' ? f.kg : f.ru}</span>
+            <b>${f.price}с <i class="fas fa-trash" style="color:#e74c3c; margin-left:10px; cursor:pointer;" onclick="remove(${i})"></i></b>
+        </div>
+    `).join('');
+    window.calcTotal();
+};
 
-    window.removeItem = (i) => {
-        cart.splice(i, 1);
-        window.updateCartUI();
+window.remove = (i) => {
+    cart.splice(i, 1);
+    if (cart.length === 0) {
+        window.closeCart();
+    } else {
         window.showCart();
-        if(cart.length === 0) window.closeCart();
-    };
+    }
+    updateBar();
+};
 
-    window.calculateTotal = () => {
-        const sub = cart.reduce((a, b) => a + b.price, 0);
-        const del = parseInt(document.getElementById('deliveryType').value);
-        document.getElementById('finalSum').innerText = sub + del;
-    };
+// 7. Жалпы сумманы эсептөө
+window.calcTotal = () => {
+    const sub = cart.reduce((a, b) => a + b.price, 0);
+    const del = parseInt(document.getElementById('delivery').value) || 0;
+    document.getElementById('finalSum').innerText = sub + del;
+};
 
-    window.toggleMbank = (v) => {
-        document.getElementById('mbankDetails').style.display = v === 'MBANK' ? 'block' : 'none';
-    };
+// 8. ЗАКАЗДЫ ЖӨНӨТҮҮ (Базага жазуу + WhatsApp)
+window.sendOrder = async () => {
+    const n = document.getElementById('uName').value.trim();
+    const a = document.getElementById('uAddr').value.trim();
+    const p = document.getElementById('payment').value;
+    const s = document.getElementById('finalSum').innerText;
 
-    // 8. ЗАКАЗДЫ ЖӨНӨТҮҮ (Firebase + WhatsApp)
-    window.checkout = async () => {
-        const name = document.getElementById('userName').value.trim();
-        const addr = document.getElementById('userAddress').value.trim();
-        const pay = document.getElementById('paymentMethod').value;
-        const final = document.getElementById('finalSum').innerText;
+    if (!n || !a) {
+        alert(lang === 'kg' ? "Сураныч, атыңызды жана дарегиңизди жазыңыз!" : "Пожалуйста, введите имя и адрес!");
+        return;
+    }
 
-        if(!name || !addr) {
-            alert(currentLang === 'kg' ? "Сураныч, атыңызды жана дарегиңизди жазыңыз!" : "Пожалуйста, введите имя и адрес!");
-            return;
-        }
-
-        const itemsText = cart.map(i => `${currentLang === 'kg' ? i.name_kg : i.name_ru} (${i.cafe})`).join(", ");
-
-        try {
-            // Адегенде Firebase'ге жазабыз
-            const ordersRef = ref(database, 'orders');
-            const newOrderRef = push(ordersRef);
-            
-            await set(newOrderRef, {
-                customerName: name,
-                address: addr,
-                items: itemsText,
-                totalPrice: final,
-                paymentMethod: pay,
-                status: "new",
-                timestamp: serverTimestamp()
-            });
-
-            // Базага жазылгандан кийин WhatsApp билдирүү түзөбүз
-            const phone = "996556616174";
-            const whatsappMsg = `🚀 *ЖАҢЫ ЗАКАЗ: NOOKAT GO*\n\n` +
-                                `👤 *Кардар:* ${name}\n` +
-                                `📍 *Дарек:* ${addr}\n` +
-                                `🍴 *Тамактар:* ${itemsText}\n` +
-                                `💳 *Төлөм:* ${pay}\n` +
-                                `💰 *Жалпы сумма:* ${final} сом`;
-
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(whatsappMsg)}`, '_blank');
-
-            // Тазалоо
-            cart = [];
-            window.updateCartUI();
-            window.closeCart();
-            alert(currentLang === 'kg' ? "Заказыңыз кабыл алынды!" : "Ваш заказ принят!");
-
-        } catch (e) {
-            console.error("Firebase Error:", e);
-            alert("Ката кетти: " + e.message);
-        }
-    };
-
-    // Жардамчы функциялар
-    window.closeProduct = () => document.getElementById('productModal').style.display = 'none';
-    window.closeCart = () => document.getElementById('cartModal').style.display = 'none';
-    window.copyNumber = () => { 
-        navigator.clipboard.writeText("0556616174"); 
-        alert(currentLang === 'kg' ? "Номер көчүрүлдү!" : "Номер скопирован!"); 
-    };
+    const itemsText = cart.map(f => `${lang === 'kg' ? f.kg : f.ru}`).join(", ");
     
-    window.searchFood = () => {
-        const val = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = products.filter(p => 
-            p.name_kg.toLowerCase().includes(val) || 
-            p.name_ru.toLowerCase().includes(val) || 
-            p.cafe.toLowerCase().includes(val)
-        );
-        window.renderMenu(filtered);
-    };
+    // WhatsApp тексти
+    const msg = `🚀 *ЖАҢЫ ЗАКАЗ (Nookat Go)*\n\n` +
+                `👤 *Кардар:* ${n}\n` +
+                `📍 *Дарек:* ${a}\n` +
+                `🍴 *Тамактар:* ${itemsText}\n` +
+                `💳 *Төлөм:* ${p}\n` +
+                `💰 *Жалпы:* ${s} сом`;
 
-    window.filterMenu = (c, e) => {
-        document.querySelectorAll('.cat-item').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        window.renderMenu(c === 'all' ? products : products.filter(p => p.cat === c));
-    };
+    try {
+        // 1. Firebase'ге жөнөтүү
+        const ordersRef = ref(db, 'orders');
+        await set(push(ordersRef), {
+            customerName: n,
+            address: a,
+            items: itemsText,
+            totalPrice: s,
+            paymentMethod: p,
+            timestamp: serverTimestamp()
+        });
 
-    // Сайт ачылганда менюну иштетүү
-    window.renderMenu();
-</script>
+        // 2. Ийгиликтүү болсо, WhatsApp'ты ачуу
+        const waUrl = `https://wa.me/996556616174?text=${encodeURIComponent(msg)}`;
+        window.open(waUrl, '_blank');
+
+        // 3. Себетти тазалоо
+        cart = [];
+        updateBar();
+        window.closeCart();
+        alert(lang === 'kg' ? "Заказыңыз кабыл алынды!" : "Ваш заказ принят!");
+
+    } catch (error) {
+        console.error("Ката кетти:", error);
+        alert("Ката: " + error.message);
+    }
+};
+
+// Жардамчы функциялар
+window.setLang = (l) => {
+    lang = l;
+    document.getElementById('l-kg').className = l === 'kg' ? 'active' : '';
+    document.getElementById('l-ru').className = l === 'ru' ? 'active' : '';
+    window.render();
+};
+
+window.toggleMbank = (v) => {
+    document.getElementById('mbankBox').style.display = v === 'MBANK' ? 'block' : 'none';
+};
+
+window.closeCart = () => {
+    document.getElementById('cartModal').style.display = 'none';
+};
+
+window.copyMB = () => {
+    navigator.clipboard.writeText("0556616174");
+    alert("0556616174 көчүрүлдү!");
+};
+
+window.searchFood = () => {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = foods.filter(f => f.kg.toLowerCase().includes(q) || f.ru.toLowerCase().includes(q));
+    window.render(filtered);
+};
+
+window.filterMenu = (c, e) => {
+    document.querySelectorAll('.cat-item').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    window.render(c === 'all' ? foods : foods.filter(f => f.cat === c));
+};
+
+// Сайт ачылганда иштетүү
+window.render();
 
